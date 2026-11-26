@@ -280,11 +280,11 @@
   </nav>
 
   <header id="top">
-    <div class="eyebrow">Open Theoretical &amp; Computational Biophysics Preprint • 5-ODE Oscillator • 184 Peer-Reviewed Citations</div>
+    <div class="eyebrow">Open Theoretical &amp; Computational Biophysics Preprint • 6-ODE + Cryo-EM/AlphaFold • 189 Peer-Reviewed Citations</div>
     <h1>An Electro-Metabolic Relaxation Oscillator Model of Peripheral TRPM8 Osmosensation and Cold Coding: Human Genetic, Mitochondrial, and Neurovascular Predictions</h1>
     <div class="authors">Matthew S. Yorek, M.S.</div>
     <div class="affil">Department of Anesthesiology, University of Virginia, Charlottesville, VA, USA &bull; ORCID: <a href="https://orcid.org/0000-0002-4737-9367" target="_blank" rel="noopener" style="color:var(--sky);text-decoration:none;">0000-0002-4737-9367</a></div>
-    <p class="sub">Unifying 90 years of peripheral cold-fiber burst electrophysiology (Zotterman, Hensel, Braun &amp; Sch&auml;fer; James A. Brock's guinea-pig and mouse corneal nerve-terminal corpus) with trans-epidermal stratum corneum water-activity leverage, depolarized-terminal L-type Ca<sub>v</sub>1.2/Ca<sub>v</sub>1.3 influx, TMBIM5–MICU1 mitochondrial Ca<sup>2+</sup>/H<sup>+</sup> negative-feedback gating, and quantitative rebuttals to six competing alternative paradigms.</p>
+    <p class="sub">Unifying 90 years of peripheral cold-fiber burst electrophysiology (Zotterman, Hensel, Braun &amp; Sch&auml;fer; James A. Brock's guinea-pig and mouse corneal nerve-terminal corpus) with trans-epidermal stratum corneum water-activity leverage, depolarized-terminal L-type Ca<sub>v</sub>1.2/Ca<sub>v</sub>1.3 influx, TMBIM5–MICU1 mitochondrial Ca<sup>2+</sup>/H<sup>+</sup> gating, head-to-head 6-ODE rival benchmarks, and single-residue cryo-EM/AlphaFold mutagenesis kill-switches (TRPM8 His845/His667 &amp; TMBIM5 Asp294–Asp325).</p>
 
     <div class="pill-bar">
       <a class="nav-pill featured" href="assets/TRPM8_Electro_Metabolic_Oscillator_Preprint_Yorek.pdf" target="_blank">&#x1F4C4; Read / Download Open Preprint PDF</a>
@@ -303,8 +303,8 @@
     <a href="#simulator">Live 5-ODE Oscillator</a>
     <a href="#leverage">SC Water-Activity Calculator</a>
     <a href="#brock">Brock Corneal Corpus</a>
-    <a href="#figures">Figures 1–6 &amp; Equations</a>
-    <a href="#rebuttals">6 Rival Alternatives &amp; Rebuttals</a>
+    <a href="#figures">Figures 1–7 &amp; Equations</a>
+    <a href="#rebuttals">6 Rival Rebuttals &amp; Mutants</a>
     <a href="#falsifications">7 Popperian Kill-Switches</a>
     <a href="#downloads">Code, PDF &amp; Cite</a>
   </nav>
@@ -316,15 +316,15 @@
     </div>
     <div class="kpi em">
       <div><span class="kpi-val">515 nM</span><span class="kpi-unit">/ pH<sub>i</sub> 6.88</span></div>
-      <div class="kpi-desc">Fixed-parameter 5-ODE burst cycle: Na<sub>v</sub>1.8 + terminal L-type Ca<sub>v</sub>1.2/1.3 surge crosses the ~300 nM MICU1 gate, triggering 180&deg; phase-locked TMBIM5 H<sup>+</sup> closure of TRPM8.</div>
+      <div class="kpi-desc">Fixed-parameter ODE burst cycle: Na<sub>v</sub>1.8 + terminal L-type Ca<sub>v</sub>1.2/1.3 surge crosses the ~300 nM MICU1 gate, triggering 180&deg; phase-locked TMBIM5 H<sup>+</sup> closure of TRPM8.</div>
     </div>
     <div class="kpi ro">
-      <div><span class="kpi-val">&minus;97%</span><span class="kpi-unit">Matrix Ca<sup>2+</sup> Rescue</span></div>
-      <div class="kpi-desc">Resolves why TRPM8+ corneal complex endings degenerate before TRPV1+ nociceptors in diabetes (Alamri, Brock et al. 2019; Yorek 2016) and how <em>MCU</em> deletion rescues axons (George 2022).</div>
+      <div><span class="kpi-val">H845Q</span><span class="kpi-unit">&amp; D294R/D325R</span></div>
+      <div class="kpi-desc">Cryo-EM (8BDC/9ZCU) &amp; AlphaFold (Q9H3K2) pinpoint candidate TRPM8 H<sup>+</sup> gate His845 (3.24 &Aring; to Arg842) and TMBIM5 pore dyad Asp294–Asp325 (3.27 &Aring;) as orthogonal kill-switches.</div>
     </div>
     <div class="kpi vi">
-      <div><span class="kpi-val">6 Rebuttals</span><span class="kpi-unit">&bull; 7 Kill-Switches</span></div>
-      <div class="kpi-desc">Steelmans &amp; quantitatively rebuts 6 mainstream alternative theories across 184 peer-reviewed citations, paired with N = 10–20 crossovers (80–96% Monte Carlo power).</div>
+      <div><span class="kpi-val">6 Rebuttals</span><span class="kpi-unit">&bull; 189 Citations</span></div>
+      <div class="kpi-desc">Pits TMBIM5–MICU1 head-to-head in 6-ODE simulations against linear PMCA, Ca<sup>2+</sup>-PLC&delta; PIP<sub>2</sub>, and Ca<sub>v</sub>3.2 models, paired with N = 10–20 crossovers (80–96% power).</div>
     </div>
   </div>
 
@@ -376,6 +376,9 @@
       <button type="button" class="preset-btn" data-preset="diabetic_mcuko">11. Diabetic + MCU KO (&minus;97% Rescue; George 2022)</button>
       <button type="button" class="preset-btn" data-preset="bayk">12. Avascular (&minus;)-(S)-Bay K 8644 Plateau</button>
       <button type="button" class="preset-btn" data-preset="perf_nif">13. Perfused Skin Low-Dose Nifedipine Confound</button>
+      <button type="button" class="preset-btn" data-preset="rival_pmca">14. Rival R1: Matched PMCA H<sup>+</sup> Only (n=1, Damped)</button>
+      <button type="button" class="preset-btn" data-preset="mut_h845q">15. Mutant: TRPM8 H845Q/A (H<sup>+</sup>-Blind Cold Plateau)</button>
+      <button type="button" class="preset-btn" data-preset="mut_d294r">16. Mutant: TMBIM5 D294R/D325R (Pore-Dead Overload)</button>
     </div>
 
     <div class="sim-layout">
@@ -415,6 +418,7 @@
         <div class="chk-grid">
           <label><input type="checkbox" id="chk-nav"> Block Na<sub>v</sub>1.8 (1 &mu;M A-803467)</label>
           <label><input type="checkbox" id="chk-cal"> Block L-Type Ca<sub>v</sub>1.2/1.3 (Nimodipine)</label>
+          <label><input type="checkbox" id="chk-hgate"> Mutate TRPM8 H845Q/A (Abolish Intracellular H<sup>+</sup> Gate)</label>
           <label><input type="checkbox" id="chk-spikes" checked> Synthesize Fast Na<sub>v</sub>1.8 Action Potentials</label>
         </div>
       </div>
@@ -526,8 +530,8 @@
   <section class="panel" id="figures">
     <div class="sec-eyebrow">High-Resolution Manuscript Plates &amp; Display Equations</div>
     <div class="sec-hdr">
-      <h2>Figures 1–6 &amp; Thermodynamic / 5-ODE Equations (Click Any Plate to Zoom)</h2>
-      <span class="sec-note">100% original Matplotlib vector schematics, ODE simulations, and archival corneal microscopy</span>
+      <h2>Figures 1–7 &amp; Thermodynamic / ODE Equations (Click Any Plate to Zoom)</h2>
+      <span class="sec-note">100% original Matplotlib vector schematics, 5/6-ODE simulations, cryo-EM/AlphaFold distances &amp; archival corneal microscopy</span>
     </div>
 
     <div class="fig-grid">
@@ -602,6 +606,18 @@
           <p>Proves why outdoor relative humidity inverts indoor winter drying (0 &deg;C 80% RH &rarr; 21 &deg;C 19.7% RH, VPD 1.99 kPa), how dew-point-derived Local VPD recovers the physical signal, and why paired crossovers achieve 80–96% power at N = 10–20.</p>
         </div>
       </article>
+
+      <article class="fig-card wide">
+        <div class="fig-img-wrap" data-full="analysis/outputs/fig7_rival_models_molecular_test.png" data-cap="Figure 7. Head-to-Head 6-ODE Rival Model Rebuttals, Cryo-EM/AlphaFold Gate Coordinates, and Single-Residue Kill-Switches.">
+          <img src="analysis/outputs/fig7_rival_models_molecular_test.png" alt="Figure 7 Head-to-Head 6-ODE Rival Rebuttals and Molecular Kill-Switches" loading="lazy">
+          <span class="zoom-hint">&#x1F50D; Click to enlarge</span>
+        </div>
+        <div class="fig-body">
+          <div class="fig-tag">Figure 7 &bull; 6-ODE Rival Rebuttals &amp; Cryo-EM/AlphaFold Kill-Switches</div>
+          <h3>Head-to-Head Rival Benchmarks (PMCA, PIP<sub>2</sub>, Ca<sub>v</sub>3.2) &amp; Single-Residue Mutagenesis Predictions</h3>
+          <p>Pits cooperative TMBIM5–MICU1 H<sup>+</sup> (M1) against matched linear PMCA H<sup>+</sup> (R1), Ca<sup>2+</sup>-PLC&delta; PI(4,5)P<sub>2</sub> depletion (R2), and pure Ca<sub>v</sub>3.2 T-type pacing (R3) across 2D (n, &alpha;<sub>H</sub>) Hopf bifurcation space (A–D), maps exact heavy-atom distances from human TRPM8 cryo-EM (8BDC, 2.65 &Aring;) and AlphaFold TMBIM5 (Q9H3K2) (E), and predicts orthogonal two-sensor phenotypes for <em>TRPM8</em> His845Gln/Ala (acidic plateau, pH<sub>i</sub> 6.86) vs. pore-dead <em>TMBIM5</em> Asp294Arg/Asp325Arg (neutral-pH matrix overload, pH<sub>i</sub> 7.24) (F).</p>
+        </div>
+      </article>
     </div>
 
     <div class="eq-grid">
@@ -669,6 +685,72 @@
         <h3>Modest Raynaud's CCB Trials &amp; Acoltremon Sign–Symptom Split</h3>
         <p style="margin-bottom:8px;"><strong>Rival View:</strong> Oral CCBs show modest primary Raynaud's benefit (SMD 0.23; Ennis 2016; Rirash 2017) attributed purely to vasodilation (cf. diabetic rat ACEi/ARB perfusion in Coppey 2006), while acoltremon met Phase 3 COMET-2/3 Schirmer tearing endpoints (N = 931; Pattar 2026; Lee 2025) after mixed Phase 2b/symptom splits (Yoon 2021; Wirta 2022).</p>
         <p style="color:#e2e8f0;border-top:1px solid #1e293b;padding-top:8px;"><strong style="color:#34d399;">Rebuttal:</strong> Figure 5B quantitatively predicts compressed systemic DHP sensory effects because vascular Ca<sub>v</sub>1.2 warming/washout opposes incomplete block of 20&times; less sensitive neuronal Ca<sub>v</sub>1.3 (Xu &amp; Lipscombe 2001) and off-target TRPA1 activation (Fajardo 2008)—requiring avascular corneal or IR-clamped DHP vs. ACEi/ARB tests—while synthetic TRPM8 agonism drives reflex tearing even as peripheral terminals cross burst-to-tonic accommodation (Carr 2003).</p>
+      </div>
+    </div>
+
+    <div style="margin-top:20px;">
+      <h3 style="font-size:15.5px;color:#f8fafc;margin-bottom:8px;">Table 6 &mdash; Orthogonal Two-Sensor Molecular Kill-Switches (Cryo-EM 8BDC/9ZCU/6WDN + AlphaFold Q9H3K2 + 6-ODE)</h3>
+      <div class="tbl-scroll">
+        <table class="data-tbl">
+          <thead>
+            <tr>
+              <th>Molecular Perturbation (33 &deg;C, +98 mOsm)</th>
+              <th>Targeted Atomic Coordinates</th>
+              <th>Bursts (5 min)</th>
+              <th>Peak [Ca<sup>2+</sup>]<sub>i</sub></th>
+              <th>Min pH<sub>i</sub></th>
+              <th>Mean Matrix c<sub>m</sub></th>
+              <th>Orthogonal Two-Sensor Experimental Verdict</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>1. Wild-Type (<em>TRPM8</em> WT + <em>TMBIM5</em> WT)</strong></td>
+              <td>Intact His845/His667 &amp; Asp294–Asp325</td>
+              <td><strong>3</strong></td>
+              <td>492.3 nM</td>
+              <td><strong>6.90</strong></td>
+              <td>3.56 (cyclic)</td>
+              <td>Phase-locked pH<sub>i</sub> dips terminate every burst; matrix c<sub>m</sub> clears between cycles.</td>
+            </tr>
+            <tr>
+              <td><strong>2. <em>TRPM8</em> His845Gln/Ala (or H845Q/H667Q)</strong></td>
+              <td>PDB 8BDC/9ZCU: His845–Arg842 (3.24 &Aring;); His667–Gln992 (2.96 &Aring;)</td>
+              <td><strong>0 (Plateau)</strong></td>
+              <td><strong>718.8 nM</strong></td>
+              <td style="color:#f43f5e;font-weight:800;">6.86 (Acidic!)</td>
+              <td><strong>6.26 (+76%)</strong></td>
+              <td><strong>Acidic non-adapting plateau:</strong> Mitochondria still acidify cytosol, yet cold/osmo TRPM8 fails to close&mdash;phenocopying menthol.</td>
+            </tr>
+            <tr>
+              <td><strong>3. <em>TMBIM5</em> Asp294Arg/Asp325Arg in <em>Tmbim5</em>-KO</strong></td>
+              <td>AF-Q9H3K2: Asp294–Asp325 (3.27 &Aring;), Ser321 (2.68 &Aring;)</td>
+              <td><strong>0 (Plateau)</strong></td>
+              <td><strong>707.0 nM</strong></td>
+              <td style="color:#38bdf8;font-weight:800;">7.24 (Neutral!)</td>
+              <td><strong>6.25 (+76%)</strong></td>
+              <td><strong>Neutral-pH matrix overload:</strong> Intact MICU1–MCU loads matrix c<sub>m</sub> (+76%), but pH<sub>i</sub> stays flat (7.24), erasing burst reset.</td>
+            </tr>
+            <tr>
+              <td><strong>4. WT + Pipette diC<sub>8</sub>-PI(4,5)P<sub>2</sub> Clamp</strong></td>
+              <td>TRP-helix Lys995 / Arg998 / Arg1008 locked</td>
+              <td><strong>3 (97% Amp)</strong></td>
+              <td>511.3 nM</td>
+              <td><strong>6.89</strong></td>
+              <td>3.68 (cyclic)</td>
+              <td>Proves PI(4,5)P<sub>2</sub> depletion is dispensable for rhythmic osmo-cold burst reset.</td>
+            </tr>
+            <tr>
+              <td><strong>5. WT + 50 mM Pipette HEPES (pH<sub>i</sub> Clamp)</strong></td>
+              <td>Cytosolic &Delta;[H<sup>+</sup>]<sub>i</sub> buffered 10-fold</td>
+              <td><strong>0 (Plateau)</strong></td>
+              <td><strong>704.3 nM</strong></td>
+              <td><strong>7.23 (Clamped)</strong></td>
+              <td><strong>6.18 (+74%)</strong></td>
+              <td>Buffering cytosolic H<sup>+</sup> alone phenocopies <em>TMBIM5</em> D294R/D325R despite intact PIP<sub>2</sub> hydrolysis (PIP<sub>2,min</sub> = 0.71).</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
   </section>
@@ -768,7 +850,7 @@
       <div class="dl-card">
         <div>
           <h3>Open Preprint Manuscript (PDF)</h3>
-          <p>Complete typeset manuscript including Equations 1–7, Tables 1–5, Figures 1–6, Section 4.2 Dialectical Rebuttals, and all 184 peer-reviewed references.</p>
+          <p>Complete typeset manuscript including Equations 1–7, Tables 1–6, Figures 1–7, Section 4.2 Dialectical Rebuttals &amp; Molecular Kill-Switches, and all 189 peer-reviewed references.</p>
         </div>
         <a class="btn sky" href="assets/TRPM8_Electro_Metabolic_Oscillator_Preprint_Yorek.pdf" target="_blank">&#x1F4C4; Download Preprint PDF</a>
       </div>
@@ -782,7 +864,7 @@
       <div class="dl-card">
         <div>
           <h3>Reproducible Python 3.12 Suite (<code>uv</code>)</h3>
-          <p>PEP 723 self-bootstrapping scripts: <code>trpm8_oscillator_ode.py</code> (29 ODE regimes, Radau/BDF), <code>build_drive_figures.py</code>, <code>power_and_simulation.py</code>, and <code>analyze_ema_export.py</code>.</p>
+          <p>PEP 723 self-bootstrapping scripts: <code>trpm8_oscillator_ode.py</code> (29 ODE regimes), <code>trpm8_rival_rebuttals_ode.py</code> (6-ODE rival &amp; cryo-EM/AF mutant benchmarks), <code>build_drive_figures.py</code>, and <code>power_and_simulation.py</code>.</p>
         </div>
         <a class="btn emerald" href="https://github.com/yorekms/trpm8-osmo-cold" target="_blank" rel="noopener">&#x1F4BB; View GitHub Repository</a>
       </div>
@@ -831,11 +913,14 @@
     micu1_lof:     { temp: 25.0, osm: 0,   icilin: 50,   menthol: 0,  psi: 1.00, cal: 1.00, mcu: 1.00, perf: 0.00, bNav: false, bCal: false, vhM8: 0,   exprM8: 1.0, vhNav: 0,  kdMicu: 0.14, nMicu: 1.8, tmbim5: 1.0, vhCal: 0 },
     diabetic:      { temp: 25.0, osm: 0,   icilin: 70,   menthol: 0,  psi: 0.85, cal: 1.00, mcu: 1.00, perf: 0.00, bNav: false, bCal: false, vhM8: 0,   exprM8: 1.0, vhNav: 0,  kdMicu: 0.30, nMicu: 5.0, tmbim5: 0.45, vhCal: 0 },
     diabetic_mcuko:{ temp: 25.0, osm: 0,   icilin: 70,   menthol: 0,  psi: 0.85, cal: 1.00, mcu: 0.03, perf: 0.00, bNav: false, bCal: false, vhM8: 0,   exprM8: 1.0, vhNav: 0,  kdMicu: 0.30, nMicu: 5.0, tmbim5: 0.45, vhCal: 0 },
-    bayk:          { temp: 33.0, osm: 82,  icilin: 0,    menthol: 0,  psi: 1.00, cal: 1.60, mcu: 1.00, perf: 0.00, bNav: false, bCal: false, vhM8: 0,   exprM8: 1.0, vhNav: 0,  kdMicu: 0.30, nMicu: 5.0, tmbim5: 1.0, vhCal: -4 },
-    perf_nif:      { temp: 33.0, osm: 98,  icilin: 0,    menthol: 0,  psi: 1.00, cal: 0.60, mcu: 1.00, perf: 0.91, bNav: false, bCal: false, vhM8: 0,   exprM8: 1.0, vhNav: 0,  kdMicu: 0.30, nMicu: 5.0, tmbim5: 1.0, vhCal: 0 }
+    bayk:          { temp: 33.0, osm: 82,  icilin: 0,    menthol: 0,  psi: 1.00, cal: 1.60, mcu: 1.00, perf: 0.00, bNav: false, bCal: false, hGateOff: false, vhM8: 0,   exprM8: 1.0, vhNav: 0,  kdMicu: 0.30, nMicu: 5.0, tmbim5: 1.0, pmcaH: 0.0, vhCal: -4 },
+    perf_nif:      { temp: 33.0, osm: 98,  icilin: 0,    menthol: 0,  psi: 1.00, cal: 0.60, mcu: 1.00, perf: 0.91, bNav: false, bCal: false, hGateOff: false, vhM8: 0,   exprM8: 1.0, vhNav: 0,  kdMicu: 0.30, nMicu: 5.0, tmbim5: 1.0, pmcaH: 0.0, vhCal: 0 },
+    rival_pmca:    { temp: 33.0, osm: 98,  icilin: 0,    menthol: 0,  psi: 1.00, cal: 1.00, mcu: 1.00, perf: 0.00, bNav: false, bCal: false, hGateOff: false, vhM8: 0,   exprM8: 1.0, vhNav: 0,  kdMicu: 0.30, nMicu: 5.0, tmbim5: 0.0, pmcaH: 16.5, vhCal: 0 },
+    mut_h845q:     { temp: 33.0, osm: 98,  icilin: 0,    menthol: 0,  psi: 1.00, cal: 1.00, mcu: 1.00, perf: 0.00, bNav: false, bCal: false, hGateOff: true,  vhM8: 0,   exprM8: 1.0, vhNav: 0,  kdMicu: 0.30, nMicu: 5.0, tmbim5: 0.9, pmcaH: 3.2, vhCal: 0 },
+    mut_d294r:     { temp: 33.0, osm: 98,  icilin: 0,    menthol: 0,  psi: 1.00, cal: 1.00, mcu: 1.00, perf: 0.00, bNav: false, bCal: false, hGateOff: false, vhM8: 0,   exprM8: 1.0, vhNav: 0,  kdMicu: 0.30, nMicu: 5.0, tmbim5: 0.0, pmcaH: 3.2, vhCal: 0 }
   };
 
-  let extra = { vhM8: 0, exprM8: 1.0, vhNav: 0, kdMicu: 0.30, nMicu: 5.0, tmbim5: 1.0, vhCal: 0 };
+  let extra = { vhM8: 0, exprM8: 1.0, vhNav: 0, kdMicu: 0.30, nMicu: 5.0, tmbim5: 1.0, pmcaH: 0.0, vhCal: 0 };
 
   function sig(x) {
     const z = x < -40 ? -40 : (x > 40 ? 40 : x);
@@ -872,8 +957,9 @@
       const ps = sig((V - (vh - 250.0 * ic_f)) / 13.0);
       const pm = men_now > 0 ? sig((V - (vh - 82.0 * (men_now / (men_now + 60.0)))) / 13.0) : 0.0;
 
-      const s_eff = s + (1.0 - s) * (0.65 * ic_f * ic_f);
-      const peff = Math.max(ps * s_eff, pm * (0.98 + 0.02 * s));
+      const s_gate = cfg.hGateOff ? 1.0 : s;
+      const s_eff = s_gate + (1.0 - s_gate) * (0.65 * ic_f * ic_f);
+      const peff = Math.max(ps * s_eff, pm * (0.98 + 0.02 * s_gate));
       const I_M8 = g_M8_max * peff * (V - E_M8);
 
       const m_nav = sig((V + 34.0 - cfg.vhNav) / 3.2) * (1.0 - 0.76 * sig((V + 16.0 - cfg.vhNav) / 3.5));
@@ -897,7 +983,7 @@
 
       out[1] = k_rate * (Jin_m8 + Jin_cal - J_pmca - J_mcu + J_mout);
       out[2] = k_rate * (J_mcu - J_mout);
-      out[3] = k_rate * (16.5 * cfg.tmbim5 * J_mcu - dh / 11.0);
+      out[3] = k_rate * (16.5 * cfg.tmbim5 * J_mcu + (cfg.pmcaH || 0.0) * Math.max(0.0, J_pmca) - dh / 11.0);
       const s_inf = 1.0 / (1.0 + Math.pow((H0 + dh) / 74.0, 8.0));
       out[4] = k_rate * (s_inf - s) / 9.0;
     }
@@ -1175,6 +1261,7 @@
     const perf = parseFloat(document.getElementById('sl-perf').value);
     const bNav = document.getElementById('chk-nav').checked;
     const bCal = document.getElementById('chk-cal').checked;
+    const hGateOff = document.getElementById('chk-hgate').checked;
     const showSpikes = document.getElementById('chk-spikes').checked;
 
     document.getElementById('lbl-temp').textContent = temp.toFixed(1) + ' °C';
@@ -1186,7 +1273,7 @@
     document.getElementById('lbl-mcu').textContent = mcu.toFixed(2) + '×';
     document.getElementById('lbl-perf').textContent = perf.toFixed(2) + (perf === 0 ? ' (Clamped)' : (perf > 0 ? ' (Dilate)' : ' (Constrict)'));
 
-    const sim = simulateODE(Object.assign({ temp, osm, icilin, menthol, psi, cal, mcu, perf, bNav, bCal, showSpikes }, extra));
+    const sim = simulateODE(Object.assign({ temp, osm, icilin, menthol, psi, cal, mcu, perf, bNav, bCal, hGateOff, showSpikes }, extra));
 
     document.getElementById('st-peaks').textContent = sim.peaks;
     document.getElementById('st-camax').textContent = Math.round(sim.caMax) + ' nM';
@@ -1219,7 +1306,7 @@
   function applyPreset(key) {
     const p = PRESETS[key];
     if (!p) return;
-    extra = { vhM8: p.vhM8, exprM8: p.exprM8, vhNav: p.vhNav, kdMicu: p.kdMicu, nMicu: p.nMicu, tmbim5: p.tmbim5, vhCal: p.vhCal };
+    extra = { vhM8: p.vhM8, exprM8: p.exprM8, vhNav: p.vhNav, kdMicu: p.kdMicu, nMicu: p.nMicu, tmbim5: p.tmbim5, pmcaH: p.pmcaH || 0.0, vhCal: p.vhCal };
     document.getElementById('sl-temp').value = p.temp;
     document.getElementById('sl-osm').value = p.osm;
     document.getElementById('sl-icilin').value = p.icilin;
@@ -1230,6 +1317,7 @@
     document.getElementById('sl-perf').value = p.perf;
     document.getElementById('chk-nav').checked = p.bNav;
     document.getElementById('chk-cal').checked = p.bCal;
+    document.getElementById('chk-hgate').checked = !!p.hGateOff;
     runAndRender();
   }
 
@@ -1241,7 +1329,7 @@
     });
   });
 
-  ['sl-temp','sl-osm','sl-icilin','sl-menthol','sl-psi','sl-cal','sl-mcu','sl-perf','chk-nav','chk-cal','chk-spikes'].forEach(id => {
+  ['sl-temp','sl-osm','sl-icilin','sl-menthol','sl-psi','sl-cal','sl-mcu','sl-perf','chk-nav','chk-cal','chk-hgate','chk-spikes'].forEach(id => {
     document.getElementById(id).addEventListener('input', runAndRender);
   });
   window.addEventListener('resize', runAndRender);
