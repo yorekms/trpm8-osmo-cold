@@ -1,0 +1,1270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TRPM8 Osmosensation &amp; Cold Coding — Electro-Metabolic Relaxation Oscillator Preprint &amp; Simulator</title>
+<meta name="description" content="Open preprint, interactive 5-ODE electro-metabolic relaxation oscillator simulator, trans-epidermal water-activity calculator, and psychrometric falsification suite by Matthew S. Yorek, M.S. (University of Virginia).">
+<style>
+  :root {
+    --bg: #070d19;
+    --card: #0f172a;
+    --card2: #111c33;
+    --border: #1e293b;
+    --border-hi: #334155;
+    --text: #e2e8f0;
+    --muted: #94a3b8;
+    --sky: #38bdf8;
+    --emerald: #10b981;
+    --emerald-hi: #34d399;
+    --amber: #f59e0b;
+    --rose: #f43f5e;
+    --violet: #a78bfa;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, sans-serif;
+    background: radial-gradient(circle at 18% 0%, #0c273b 0%, #0a1629 38%, #070d19 72%);
+    color: var(--text);
+    min-height: 100vh;
+    line-height: 1.6;
+  }
+  .wrap { max-width: 1220px; margin: 0 auto; padding: 34px 22px 76px; }
+
+  .site-tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 22px; padding-bottom: 15px; border-bottom: 1px solid var(--border); }
+  a.site-tab {
+    display: inline-flex; align-items: center; gap: 7px; padding: 8px 14px; border-radius: 10px;
+    font-size: 12.6px; font-weight: 700; text-decoration: none; color: #cbd5e1;
+    background: #0f172a; border: 1px solid #334155; transition: all .15s ease;
+  }
+  a.site-tab:hover { border-color: var(--sky); color: #fff; background: #16233d; }
+  a.site-tab.active { background: linear-gradient(135deg, #0ea5e9, #2563eb); border-color: var(--sky); color: #fff; box-shadow: 0 4px 14px rgba(14, 165, 233, 0.28); }
+  a.site-tab.bio { border-color: rgba(16, 185, 129, 0.45); color: #6ee7b7; background: rgba(6, 78, 59, 0.28); }
+  a.site-tab.bio:hover { border-color: var(--emerald); color: #ecfdf5; background: rgba(6, 95, 70, 0.48); }
+  a.site-tab.book { border-color: rgba(167, 139, 250, 0.45); color: #ddd6fe; background: rgba(76, 29, 149, 0.28); }
+  a.site-tab.book:hover { border-color: var(--violet); color: #fff; background: rgba(91, 33, 182, 0.48); }
+
+  header { border-bottom: 1px solid var(--border); padding-bottom: 26px; margin-bottom: 26px; }
+  .eyebrow {
+    display: inline-block; padding: 4px 12px; border-radius: 999px;
+    font-size: 11.5px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
+    background: rgba(56, 189, 248, 0.14); color: var(--sky);
+    border: 1px solid rgba(56, 189, 248, 0.35); margin-bottom: 12px;
+  }
+  h1 { font-size: clamp(24px, 3.1vw, 34px); color: #f8fafc; letter-spacing: -0.02em; line-height: 1.22; margin-bottom: 10px; }
+  .authors { font-size: 15px; color: #fde68a; font-weight: 700; margin-bottom: 4px; }
+  .affil { font-size: 13.5px; color: #cbd5e1; margin-bottom: 10px; }
+  .sub { font-size: 14px; color: var(--muted); max-width: 1020px; }
+
+  .pill-bar { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+  a.nav-pill {
+    display: inline-flex; align-items: center; gap: 6px; padding: 7.5px 14px;
+    border-radius: 999px; font-size: 12.3px; font-weight: 700; text-decoration: none;
+    color: #cbd5e1; background: #0f172a; border: 1px solid #334155; transition: all .16s ease;
+  }
+  a.nav-pill:hover { border-color: var(--sky); color: #fff; transform: translateY(-1px); background: #16233d; }
+  a.nav-pill.featured {
+    background: linear-gradient(135deg, #0ea5e9, #2563eb); border-color: var(--sky); color: #fff;
+    box-shadow: 0 4px 14px rgba(14, 165, 233, 0.32);
+  }
+  a.nav-pill.bio { border-color: rgba(16, 185, 129, 0.5); color: #6ee7b7; background: rgba(6, 78, 59, 0.36); }
+  a.nav-pill.bio:hover { border-color: var(--emerald); color: #ecfdf5; background: rgba(6, 95, 70, 0.56); }
+  a.nav-pill.violet { border-color: rgba(167, 139, 250, 0.52); color: #ddd6fe; background: rgba(76, 29, 149, 0.34); }
+  a.nav-pill.violet:hover { border-color: var(--violet); color: #fff; background: rgba(91, 33, 182, 0.55); }
+
+  .jump-bar {
+    position: sticky; top: 10px; z-index: 40;
+    display: flex; flex-wrap: wrap; align-items: center; gap: 7px;
+    padding: 9px 14px; margin-bottom: 24px; border-radius: 14px;
+    background: rgba(15, 23, 42, 0.90); border: 1px solid rgba(56, 189, 248, 0.32);
+    backdrop-filter: blur(12px); box-shadow: 0 10px 28px rgba(0, 0, 0, 0.45);
+  }
+  .jump-lbl { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.07em; color: var(--sky); margin-right: 4px; }
+  .jump-bar a {
+    font-size: 12px; font-weight: 700; color: #e2e8f0; text-decoration: none;
+    padding: 4px 10px; border-radius: 8px; background: rgba(30, 41, 59, 0.72); border: 1px solid transparent; transition: .15s;
+  }
+  .jump-bar a:hover { border-color: var(--sky); color: #fff; background: rgba(14, 116, 144, 0.42); }
+
+  .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; margin-bottom: 28px; }
+  .kpi {
+    background: var(--card); border: 1px solid var(--border); border-radius: 14px;
+    padding: 16px 18px; border-top-width: 3px;
+  }
+  .kpi.sk { border-top-color: var(--sky); }
+  .kpi.em { border-top-color: var(--emerald); }
+  .kpi.ro { border-top-color: var(--rose); }
+  .kpi.vi { border-top-color: var(--violet); }
+  .kpi-val { font-size: 25px; font-weight: 900; color: #fff; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+  .kpi-unit { font-size: 12.8px; font-weight: 700; margin-left: 4px; }
+  .kpi.sk .kpi-unit { color: var(--sky); }
+  .kpi.em .kpi-unit { color: var(--emerald-hi); }
+  .kpi.ro .kpi-unit { color: #fda4af; }
+  .kpi.vi .kpi-unit { color: #c4b5fd; }
+  .kpi-desc { font-size: 12.2px; color: var(--muted); margin-top: 5px; line-height: 1.46; }
+
+  section.panel {
+    background: var(--card); border: 1px solid var(--border); border-radius: 18px;
+    padding: 26px; margin-bottom: 24px;
+  }
+  .sec-eyebrow { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: var(--sky); margin-bottom: 4px; }
+  .sec-hdr { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 12px; margin-bottom: 18px; }
+  .sec-hdr h2 { font-size: 22px; font-weight: 800; color: #f8fafc; letter-spacing: -0.015em; }
+  .sec-note { font-size: 12.5px; color: var(--muted); }
+
+  .abstract-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 15px; margin-bottom: 16px; }
+  .abs-box { background: rgba(2, 6, 23, 0.55); border: 1px solid var(--border); border-radius: 13px; padding: 16px 18px; }
+  .abs-box h3 { font-size: 12.3px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; color: var(--sky); margin-bottom: 8px; }
+  .abs-box p { font-size: 13.3px; color: #cbd5e1; line-height: 1.62; }
+
+  .callout {
+    background: linear-gradient(90deg, rgba(14, 165, 233, 0.12), rgba(16, 185, 129, 0.09));
+    border: 1px solid rgba(56, 189, 248, 0.34); border-left: 4px solid var(--sky);
+    border-radius: 12px; padding: 13px 16px; font-size: 13px; color: #e2e8f0;
+  }
+  .callout strong { color: #fff; }
+
+  /* Simulator Cockpit */
+  .preset-bar { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 16px; }
+  .preset-btn {
+    padding: 6.5px 11.5px; border-radius: 999px; font-size: 11.8px; font-weight: 700;
+    background: #162238; color: #cbd5e1; border: 1px solid #334155; cursor: pointer; font-family: inherit; transition: .15s;
+  }
+  .preset-btn:hover { border-color: var(--sky); color: #fff; }
+  .preset-btn.active { background: linear-gradient(135deg, #0284c7, #2563eb); color: #fff; border-color: var(--sky); box-shadow: 0 3px 12px rgba(14, 165, 233, 0.32); }
+
+  .sim-layout { display: grid; grid-template-columns: 330px 1fr; gap: 18px; align-items: start; }
+  @media (max-width: 960px) { .sim-layout { grid-template-columns: 1fr; } }
+  .sim-controls {
+    background: rgba(2, 6, 23, 0.62); border: 1px solid var(--border); border-radius: 14px; padding: 16px;
+    display: flex; flex-direction: column; gap: 11px;
+  }
+  .ctrl-row { display: flex; flex-direction: column; gap: 3px; }
+  .ctrl-lbl { display: flex; justify-content: space-between; font-size: 12px; font-weight: 700; color: #cbd5e1; }
+  .ctrl-val { color: var(--sky); font-variant-numeric: tabular-nums; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+  input[type="range"] { width: 100%; accent-color: #38bdf8; cursor: pointer; }
+  .chk-grid { display: flex; flex-direction: column; gap: 6px; padding-top: 6px; border-top: 1px solid var(--border); font-size: 12.2px; color: #cbd5e1; }
+  .chk-grid label { display: flex; align-items: center; gap: 7px; cursor: pointer; }
+
+  .sim-plots { display: flex; flex-direction: column; gap: 12px; }
+  .sim-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(128px, 1fr)); gap: 9px; }
+  .s-tile {
+    background: rgba(2, 6, 23, 0.62); border: 1px solid var(--border); border-radius: 11px; padding: 9px 11px;
+  }
+  .s-tile .k { font-size: 10.6px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); }
+  .s-tile .v { font-size: 16.5px; font-weight: 900; color: #f8fafc; font-variant-numeric: tabular-nums; margin-top: 2px; }
+  .canvas-box {
+    background: #060b16; border: 1px solid var(--border-hi); border-radius: 13px; padding: 10px 12px;
+  }
+  .canvas-hdr { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 6px; font-size: 12px; font-weight: 700; color: #e2e8f0; }
+  .legend-dots { display: flex; flex-wrap: wrap; gap: 12px; font-size: 11.5px; }
+  .dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 4px; }
+  canvas.osc-cv { width: 100%; height: 245px; display: block; }
+  canvas.osc-cv.sm { height: 175px; }
+
+  /* Water-Activity Calculator */
+  .aw-grid { display: grid; grid-template-columns: 1fr 1.2fr; gap: 18px; align-items: center; }
+  @media (max-width: 820px) { .aw-grid { grid-template-columns: 1fr; } }
+  .aw-readout {
+    background: rgba(2, 6, 23, 0.6); border: 1px solid var(--border); border-radius: 14px; padding: 18px;
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;
+  }
+
+  /* Brock 5-anchor cards */
+  .methods-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(295px, 1fr)); gap: 14px; margin-top: 14px; }
+  .m-card { background: var(--card2); border: 1px solid var(--border); border-radius: 13px; padding: 16px; }
+  .m-card h3 { font-size: 14.5px; color: #f8fafc; margin-bottom: 6px; }
+  .m-card p { font-size: 12.8px; color: #cbd5e1; line-height: 1.56; }
+
+  /* Figures Gallery */
+  .fig-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(460px, 1fr)); gap: 18px; }
+  @media (max-width: 560px) { .fig-grid { grid-template-columns: 1fr; } }
+  .fig-card {
+    background: var(--card2); border: 1px solid var(--border); border-radius: 15px;
+    overflow: hidden; display: flex; flex-direction: column; transition: .18s;
+  }
+  .fig-card:hover { border-color: var(--sky); transform: translateY(-2px); box-shadow: 0 14px 32px rgba(0,0,0,0.45); }
+  .fig-card.wide { grid-column: 1 / -1; }
+  .fig-img-wrap {
+    background: #ffffff; padding: 12px; cursor: zoom-in; position: relative;
+    display: flex; align-items: center; justify-content: center; min-height: 230px;
+  }
+  .fig-img-wrap img { max-width: 100%; max-height: 450px; object-fit: contain; display: block; }
+  .fig-card.wide .fig-img-wrap img { max-height: 560px; }
+  .zoom-hint {
+    position: absolute; bottom: 8px; right: 10px;
+    background: rgba(15, 23, 42, 0.86); color: #e2e8f0;
+    padding: 3px 9px; border-radius: 999px; font-size: 11px; font-weight: 700;
+  }
+  .fig-body { padding: 15px 18px 18px; flex: 1; }
+  .fig-tag { font-size: 10.8px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; color: var(--sky); margin-bottom: 4px; }
+  .fig-body h3 { font-size: 15.8px; color: #f8fafc; margin-bottom: 6px; line-height: 1.3; }
+  .fig-body p { font-size: 12.6px; color: #cbd5e1; line-height: 1.55; }
+
+  .eq-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 14px; margin-top: 16px; }
+  .eq-card { background: var(--card2); border: 1px solid var(--border); border-radius: 13px; overflow: hidden; }
+  .eq-card .fig-img-wrap { min-height: 110px; padding: 10px; }
+  .eq-card .fig-img-wrap img { max-height: 140px; }
+  .eq-card .fig-body { padding: 11px 14px; }
+  .eq-card .fig-body h3 { font-size: 13.5px; }
+
+  /* Tables & Reference Search */
+  .tbl-toolbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 12px; }
+  .search-input {
+    flex: 1; min-width: 240px; max-width: 460px; padding: 9px 13px; border-radius: 10px;
+    background: #091020; border: 1px solid var(--border-hi); color: #f8fafc; font-size: 13px; font-family: inherit;
+  }
+  .search-input:focus { outline: none; border-color: var(--sky); }
+  .tbl-scroll { overflow-x: auto; border: 1px solid var(--border); border-radius: 12px; background: #091020; max-height: 540px; overflow-y: auto; }
+  table.data-tbl { width: 100%; border-collapse: collapse; font-size: 12.4px; }
+  table.data-tbl thead th {
+    position: sticky; top: 0; z-index: 2; background: #132038; color: #e2e8f0;
+    padding: 10px 11px; text-align: left; font-weight: 800; border-bottom: 1px solid var(--border-hi);
+  }
+  table.data-tbl tbody td { padding: 9px 11px; border-bottom: 1px solid rgba(30, 41, 59, 0.72); color: #cbd5e1; vertical-align: top; line-height: 1.5; }
+  table.data-tbl tbody tr:hover { background: rgba(56, 189, 248, 0.08); }
+  table.data-tbl a { color: var(--sky); text-decoration: none; font-weight: 600; }
+  table.data-tbl a:hover { text-decoration: underline; }
+
+  .dl-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(270px, 1fr)); gap: 15px; }
+  .dl-card {
+    background: var(--card2); border: 1px solid var(--border); border-radius: 14px; padding: 18px;
+    display: flex; flex-direction: column; justify-content: space-between; gap: 12px;
+  }
+  .dl-card h3 { font-size: 15.5px; color: #f8fafc; margin-bottom: 5px; }
+  .dl-card p { font-size: 12.8px; color: var(--muted); }
+  a.btn, button.btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 7px;
+    padding: 10px 14px; border-radius: 10px; text-decoration: none; font-size: 13px; font-weight: 700;
+    border: 1px solid #334155; background: #1e293b; color: #f8fafc; transition: .15s; text-align: center; cursor: pointer; font-family: inherit;
+  }
+  a.btn:hover, button.btn:hover { filter: brightness(1.12); transform: translateY(-1px); }
+  a.btn.sky, button.btn.sky { background: linear-gradient(135deg, #0284c7, #2563eb); border: none; }
+  a.btn.emerald, button.btn.emerald { background: linear-gradient(135deg, #059669, #047857); border: none; }
+  a.btn.violet { background: linear-gradient(135deg, #7c3aed, #2563eb); border: none; }
+
+  pre.cite-box {
+    background: #060b16; border: 1px solid var(--border-hi); border-radius: 12px; padding: 14px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; color: #cbd5e1;
+    overflow-x: auto; margin-top: 14px; line-height: 1.55;
+  }
+
+  .lightbox {
+    display: none; position: fixed; inset: 0; z-index: 9999;
+    background: rgba(2, 6, 23, 0.94); backdrop-filter: blur(8px);
+    align-items: center; justify-content: center; flex-direction: column; padding: 24px;
+  }
+  .lightbox.open { display: flex; }
+  .lightbox img { max-width: 95vw; max-height: 84vh; background: #fff; padding: 10px; border-radius: 10px; object-fit: contain; }
+  .lightbox-cap { color: #e2e8f0; font-size: 13.5px; margin-top: 12px; max-width: 920px; text-align: center; }
+  .lightbox-close {
+    position: absolute; top: 18px; right: 24px; background: #1e293b; color: #fff;
+    border: 1px solid #475569; border-radius: 999px; padding: 6px 14px; font-size: 13px; font-weight: 700; cursor: pointer;
+  }
+
+  footer {
+    border-top: 1px solid var(--border); padding-top: 22px; margin-top: 28px;
+    font-size: 12.5px; color: var(--muted); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px;
+  }
+  footer a { color: var(--sky); text-decoration: none; font-weight: 600; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav class="site-tabs" aria-label="Research Network">
+    <a class="site-tab active" href="./">TRPM8 Osmo-Cold Oscillator Preprint</a>
+    <a class="site-tab book" href="app/index.html">Companion App: Dew-Point VPD &amp; EMA Lab &rarr;</a>
+    <a class="site-tab" href="https://yorekms.github.io/condensate-pharmacology/" target="_blank" rel="noopener">Condensate Pharmacology &amp; IDR Book Hub &nearr;</a>
+    <a class="site-tab bio" href="https://yorekms.github.io/seizure-transcriptomics-workbench/" target="_blank" rel="noopener">Seizure Bioinformatics Portal &nearr;</a>
+  </nav>
+
+  <header id="top">
+    <div class="eyebrow">Open Theoretical &amp; Computational Biophysics Preprint • 5-ODE Oscillator • 120 Peer-Reviewed Citations</div>
+    <h1>An Electro-Metabolic Relaxation Oscillator Model of Peripheral TRPM8 Osmosensation and Cold Coding: Human Genetic, Mitochondrial, and Neurovascular Predictions</h1>
+    <div class="authors">Matthew S. Yorek, M.S.</div>
+    <div class="affil">Department of Anesthesiology, University of Virginia, Charlottesville, VA, USA &bull; ORCID: <a href="https://orcid.org/0000-0002-4737-9367" target="_blank" rel="noopener" style="color:var(--sky);text-decoration:none;">0000-0002-4737-9367</a></div>
+    <p class="sub">Unifying 90 years of peripheral cold-fiber burst electrophysiology (Zotterman, Hensel, Braun &amp; Schäfer; James A. Brock's guinea-pig and mouse corneal nerve-terminal corpus) with thermodynamic stratum corneum water-activity leverage, intact-terminal L-type Ca<sub>v</sub>1.2/Ca<sub>v</sub>1.3 influx, and TMBIM5–MICU1 mitochondrial Ca<sup>2+</sup>/H<sup>+</sup> negative-feedback gating.</p>
+
+    <div class="pill-bar">
+      <a class="nav-pill featured" href="assets/TRPM8_Electro_Metabolic_Oscillator_Preprint_Yorek.pdf" target="_blank">&#x1F4C4; Read / Download Open Preprint PDF</a>
+      <a class="nav-pill bio" href="#simulator">&#x26A1; Interactive 5-ODE Oscillator Cockpit</a>
+      <a class="nav-pill violet" href="app/index.html">&#x1F4F1; Launch Dew-Point VPD Mobile App</a>
+      <a class="nav-pill" href="https://my-scientist.carrd.co" target="_blank" rel="noopener">&#x1F310; my-scientist.carrd.co</a>
+      <a class="nav-pill" href="https://my-scientific-software.carrd.co" target="_blank" rel="noopener">&#x1F4BB; my-scientific-software.carrd.co</a>
+      <a class="nav-pill" href="https://github.com/yorekms/trpm8-osmo-cold" target="_blank" rel="noopener">GitHub Source (@yorekms)</a>
+      <a class="nav-pill" href="mailto:yorekms@gmail.com">yorekms@gmail.com</a>
+    </div>
+  </header>
+
+  <nav class="jump-bar" aria-label="Section navigation">
+    <span class="jump-lbl">Jump To:</span>
+    <a href="#overview">Abstract &amp; Synthesis</a>
+    <a href="#simulator">Live 5-ODE Oscillator</a>
+    <a href="#leverage">SC Water-Activity Calculator</a>
+    <a href="#brock">Brock Corneal Corpus</a>
+    <a href="#figures">Figures 1–6 &amp; Equations</a>
+    <a href="#falsifications">7 Popperian Kill-Switches</a>
+    <a href="#downloads">Code, PDF &amp; Cite</a>
+  </nav>
+
+  <div class="kpi-grid">
+    <div class="kpi sk">
+      <div><span class="kpi-val">&minus;55.8</span><span class="kpi-unit">Osm/kg per &Delta;a<sub>w</sub></span></div>
+      <div class="kpi-desc">Steep thermodynamic water-activity leverage transmits <strong>+56 to +89 mOsm/kg</strong> across even a 99.8%-shielding SC + SG2 tight-junction barrier to intraepidermal TRPM8+ endings.</div>
+    </div>
+    <div class="kpi em">
+      <div><span class="kpi-val">515 nM</span><span class="kpi-unit">/ pH<sub>i</sub> 6.88</span></div>
+      <div class="kpi-desc">Fixed-parameter 5-ODE burst cycle: Na<sub>v</sub>1.8 + terminal L-type Ca<sub>v</sub>1.2/1.3 surge crosses the ~300 nM MICU1 gate, triggering 180&deg; phase-locked TMBIM5 H<sup>+</sup> closure of TRPM8.</div>
+    </div>
+    <div class="kpi ro">
+      <div><span class="kpi-val">&minus;97%</span><span class="kpi-unit">Matrix Ca<sup>2+</sup> Rescue</span></div>
+      <div class="kpi-desc">Resolves why TRPM8+ corneal complex endings degenerate before TRPV1+ nociceptors in diabetes (Alamri, Brock et al. 2019; Yorek 2016) and how <em>MCU</em> deletion rescues axons (George 2022).</div>
+    </div>
+    <div class="kpi vi">
+      <div><span class="kpi-val">7 Tests</span><span class="kpi-unit">&bull; 80–96% Power</span></div>
+      <div class="kpi-desc">Open community falsification benchmarks (N = 10–20 paired crossovers &amp; avascular corneal pharmacology) grounded in 120 peer-reviewed citations and Monte Carlo power simulations.</div>
+    </div>
+  </div>
+
+  <!-- ABSTRACT & OVERVIEW -->
+  <section class="panel" id="overview">
+    <div class="sec-eyebrow">Theoretical &amp; Biophysical Synthesis</div>
+    <div class="sec-hdr">
+      <h2>Why Peripheral Cold Coding Is an Electro-Metabolic Osmotic Oscillator</h2>
+      <span class="sec-note">Standalone Computational Biophysics &amp; Open Falsification Framework</span>
+    </div>
+    <div class="abstract-grid">
+      <div class="abs-box">
+        <h3>1. The Classical &amp; Corneal Paradox</h3>
+        <p>Post-2002 textbooks compressed CMR1/TRPM8 into a scalar rate-coded thermometer, sidelining 70 years of intact-fiber recordings showing endogenous Ca<sup>2+</sup>-controlled, CO<sub>2</sub>-inhibited, metabolically coupled bursting, plus focal corneal nerve-terminal recordings (Brock et al., 1998–2019) proving cold endings sit chronically depolarized (&ge;&minus;40 mV) inside the L-type Ca<sub>v</sub>1.3/Ca<sub>v</sub>1.2 window current.</p>
+      </div>
+      <div class="abs-box">
+        <h3>2. Cutaneous Water-Activity Leverage</h3>
+        <p>Because dc<sub>osm</sub>/da<sub>w</sub> = &minus;(M<sub>w</sub>a<sub>w</sub>)<sup>&minus;1</sup> &approx; &minus;55.8 Osm/kg at physiological hydration, an intact stratum corneum + SG2 tight-junction seal blocking <strong>99.8%</strong> of ambient humidity drop still delivers +55.8 mOsm/kg (50% RH) to +89.3 mOsm/kg (20% RH winter air) directly to SG-pruned TRPM8+ terminals—matching the &gt;340 mOsm/kg corneal cold threshold (Parra et al., 2014).</p>
+      </div>
+      <div class="abs-box">
+        <h3>3. Unified Genetics &amp; Pharmacology</h3>
+        <p>With one invariant parameter set across all 29 regimes, the 5-ODE model reproduces isothermal +98 mOsm bursting at 33 &deg;C, H<sup>+</sup>-insensitive menthol tonic lock-in, human <em>TRPM8</em> (D665N/R30Q, rs10166942), <em>SCN10A</em> (I206M/G1662S), and <em>MICU1</em> (MPXPS) dynamics, diabetic <em>MCU</em>-KO protection, and dermal dihydropyridine perfusion confounds.</p>
+      </div>
+    </div>
+    <div class="callout">
+      <strong>Open Theoretical Scope:</strong> This work is presented strictly as a standalone theoretical and computational contribution anchored in 120 peer-reviewed empirical studies. Seven explicit Popperian refutation protocols (Table 5) and reproducible software tools are placed openly into the public domain for independent experimental testing.
+    </div>
+  </section>
+
+  <!-- INTERACTIVE 5-ODE OSCILLATOR SIMULATOR -->
+  <section class="panel" id="simulator">
+    <div class="sec-eyebrow">Interactive Browser Biophysics Engine (Equations 1–7)</div>
+    <div class="sec-hdr">
+      <h2>Live 5-ODE TRPM8 – Na<sub>v</sub>1.8 – Ca<sub>v</sub>1.2/1.3 – Mitochondrial H<sup>+</sup> Oscillator Cockpit</h2>
+      <span class="sec-note">Exact real-time integration of <code>trpm8_oscillator_ode.py</code> (t &isin; [0, 7 min]; stimulus window 1–6 min)</span>
+    </div>
+
+    <div class="preset-bar" id="preset-bar">
+      <button type="button" class="preset-btn active" data-preset="ctrl">1. Control Bursting (25 &deg;C, 50 nM Icilin)</button>
+      <button type="button" class="preset-btn" data-preset="brock_dry">2. Warm Winter/Corneal Dryness (33 &deg;C, +89 mOsm)</button>
+      <button type="button" class="preset-btn" data-preset="isothermal98">3. Isothermal +98 mOsm (33 &deg;C, Zero Cooling)</button>
+      <button type="button" class="preset-btn" data-preset="skin_dry22">4. Dry-Primed Skin in 22 &deg;C Gel (+56 mOsm)</button>
+      <button type="button" class="preset-btn" data-preset="skin_hyd22">5. Hydrated Skin in 22 &deg;C Gel (+0 mOsm, Quiet)</button>
+      <button type="button" class="preset-btn" data-preset="menthol">6. Menthol 35 &mu;M (H<sup>+</sup>-Bypass Tonic)</button>
+      <button type="button" class="preset-btn" data-preset="trpm8_gof">7. Human TRPM8 GoF (D665N/R30Q, 33 &deg;C +55 mOsm)</button>
+      <button type="button" class="preset-btn" data-preset="scn10a_gof">8. Human SCN10A GoF (I206M/G1662S)</button>
+      <button type="button" class="preset-btn" data-preset="micu1_lof">9. Human MICU1 LoF (MPXPS, 25&times; Rest c<sub>m</sub>)</button>
+      <button type="button" class="preset-btn" data-preset="diabetic">10. Diabetic Overload (Alamri &amp; Brock 2019)</button>
+      <button type="button" class="preset-btn" data-preset="diabetic_mcuko">11. Diabetic + MCU KO (&minus;97% Rescue; George 2022)</button>
+      <button type="button" class="preset-btn" data-preset="bayk">12. Avascular (&minus;)-(S)-Bay K 8644 Plateau</button>
+      <button type="button" class="preset-btn" data-preset="perf_nif">13. Perfused Skin Low-Dose Nifedipine Confound</button>
+    </div>
+
+    <div class="sim-layout">
+      <div class="sim-controls">
+        <div class="ctrl-row">
+          <div class="ctrl-lbl"><span>Temperature (T)</span><span class="ctrl-val" id="lbl-temp">25.0 &deg;C</span></div>
+          <input type="range" id="sl-temp" min="15" max="36" step="0.5" value="25">
+        </div>
+        <div class="ctrl-row">
+          <div class="ctrl-lbl"><span>Hyperosmolarity (+&Delta;Osm)</span><span class="ctrl-val" id="lbl-osm">+0 mOsm/kg</span></div>
+          <input type="range" id="sl-osm" min="0" max="150" step="1" value="0">
+        </div>
+        <div class="ctrl-row">
+          <div class="ctrl-lbl"><span>Icilin Drive</span><span class="ctrl-val" id="lbl-icilin">50 nM</span></div>
+          <input type="range" id="sl-icilin" min="0" max="1000" step="5" value="50">
+        </div>
+        <div class="ctrl-row">
+          <div class="ctrl-lbl"><span>Menthol (H<sup>+</sup>-Insensitive)</span><span class="ctrl-val" id="lbl-menthol">0 &mu;M</span></div>
+          <input type="range" id="sl-menthol" min="0" max="80" step="1" value="0">
+        </div>
+        <div class="ctrl-row">
+          <div class="ctrl-lbl"><span>Mitochondrial &Delta;&Psi;<sub>m</sub></span><span class="ctrl-val" id="lbl-psi">1.00</span></div>
+          <input type="range" id="sl-psi" min="0.05" max="1.20" step="0.01" value="1.00">
+        </div>
+        <div class="ctrl-row">
+          <div class="ctrl-lbl"><span>Neuronal L-Type Scale (g<sub>CaL</sub>)</span><span class="ctrl-val" id="lbl-cal">1.00&times;</span></div>
+          <input type="range" id="sl-cal" min="0.00" max="1.80" step="0.05" value="1.00">
+        </div>
+        <div class="ctrl-row">
+          <div class="ctrl-lbl"><span>Mitochondrial MCU Scale</span><span class="ctrl-val" id="lbl-mcu">1.00&times;</span></div>
+          <input type="range" id="sl-mcu" min="0.00" max="1.20" step="0.01" value="1.00">
+        </div>
+        <div class="ctrl-row">
+          <div class="ctrl-lbl"><span>Dermal Perfusion Shift (p)</span><span class="ctrl-val" id="lbl-perf">0.00 (Clamped)</span></div>
+          <input type="range" id="sl-perf" min="-1.00" max="1.00" step="0.05" value="0.00">
+        </div>
+        <div class="chk-grid">
+          <label><input type="checkbox" id="chk-nav"> Block Na<sub>v</sub>1.8 (1 &mu;M A-803467)</label>
+          <label><input type="checkbox" id="chk-cal"> Block L-Type Ca<sub>v</sub>1.2/1.3 (Nimodipine)</label>
+          <label><input type="checkbox" id="chk-spikes" checked> Synthesize Fast Na<sub>v</sub>1.8 Action Potentials</label>
+        </div>
+      </div>
+
+      <div class="sim-plots">
+        <div class="sim-stats">
+          <div class="s-tile"><div class="k">Burst Peaks</div><div class="v" id="st-peaks">3</div></div>
+          <div class="s-tile"><div class="k">Peak [Ca<sup>2+</sup>]<sub>i</sub></div><div class="v" id="st-camax">515 nM</div></div>
+          <div class="s-tile"><div class="k">Tail Osc. Amp</div><div class="v" id="st-tail">255 nM</div></div>
+          <div class="s-tile"><div class="k">Min Cytosolic pH<sub>i</sub></div><div class="v" id="st-ph">6.88</div></div>
+          <div class="s-tile"><div class="k">Mean Matrix c<sub>m</sub></div><div class="v" id="st-cm">3.65 a.u.</div></div>
+          <div class="s-tile"><div class="k">Regime State</div><div class="v" id="st-regime" style="font-size:13.2px;color:#38bdf8;">Rhythmic Bursting</div></div>
+        </div>
+
+        <div class="canvas-box">
+          <div class="canvas-hdr">
+            <span>Membrane Potential Spikes (V<sub>m</sub>), Cytosolic [Ca<sup>2+</sup>]<sub>i</sub> &amp; Phase-Locked Mitochondrial pH<sub>i</sub></span>
+            <div class="legend-dots">
+              <span><i class="dot" style="background:#94a3b8;"></i>V<sub>m</sub> (mV)</span>
+              <span><i class="dot" style="background:#38bdf8;"></i>[Ca<sup>2+</sup>]<sub>i</sub> (nM)</span>
+              <span><i class="dot" style="background:#f43f5e;"></i>pH<sub>i</sub> (Mito H<sup>+</sup>)</span>
+            </div>
+          </div>
+          <canvas id="cv-main" class="osc-cv"></canvas>
+        </div>
+
+        <div class="canvas-box">
+          <div class="canvas-hdr">
+            <span>Mitochondrial Matrix Ca<sup>2+</sup> Load (c<sub>m</sub>) vs. Fission Overload Zone (&ge;4.0 a.u.)</span>
+            <div class="legend-dots">
+              <span><i class="dot" style="background:#f59e0b;"></i>Matrix Ca<sup>2+</sup> c<sub>m</sub> (a.u.)</span>
+              <span><i class="dot" style="background:#a78bfa;"></i>Slow Envelope V (mV)</span>
+            </div>
+          </div>
+          <canvas id="cv-mito" class="osc-cv sm"></canvas>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TRANS-EPIDERMAL WATER ACTIVITY CALCULATOR -->
+  <section class="panel" id="leverage">
+    <div class="sec-eyebrow">Thermodynamic Epidermal Barrier Bridge (Equations 3–4 &amp; Table 2)</div>
+    <div class="sec-hdr">
+      <h2>Trans-Epidermal Water-Activity (a<sub>w</sub>) Leverage Calculator</h2>
+      <span class="sec-note">Why 99.8% stratum corneum + SG2 tight-junction shielding still primes intraepidermal TRPM8+ terminals</span>
+    </div>
+    <div class="aw-grid">
+      <div class="sim-controls">
+        <div class="ctrl-row">
+          <div class="ctrl-lbl"><span>Ambient Surface RH (a<sub>w,surf</sub>)</span><span class="ctrl-val" id="lbl-aw-rh">50% RH (0.50)</span></div>
+          <input type="range" id="sl-aw-rh" min="10" max="95" step="1" value="50">
+        </div>
+        <div class="ctrl-row">
+          <div class="ctrl-lbl"><span>SC + SG2 Shielding Efficiency (S<sub>SC</sub>)</span><span class="ctrl-val" id="lbl-aw-sh">99.80%</span></div>
+          <input type="range" id="sl-aw-sh" min="98.80" max="99.98" step="0.01" value="99.80">
+        </div>
+        <div class="ctrl-row">
+          <div class="ctrl-lbl"><span>Skin / Gel Test Temperature</span><span class="ctrl-val" id="lbl-aw-t">22.0 &deg;C</span></div>
+          <input type="range" id="sl-aw-t" min="18" max="34" step="0.5" value="22">
+        </div>
+        <button type="button" class="btn emerald" id="btn-send-ode" style="margin-top:6px;">&#x26A1; Send Computed SG Osmolality to 5-ODE Simulator</button>
+      </div>
+      <div class="aw-readout">
+        <div class="s-tile"><div class="k">Apical SG Water Activity (a<sub>w,SG</sub>)</div><div class="v" id="aw-sg">0.99361</div></div>
+        <div class="s-tile"><div class="k">Equivalent SG Osmolality</div><div class="v" id="aw-osm" style="color:#38bdf8;">355.8 mOsm/kg</div></div>
+        <div class="s-tile"><div class="k">Hyperosmolar Shift (+&Delta;Osm<sub>SG</sub>)</div><div class="v" id="aw-dosm" style="color:#34d399;">+55.2 mOsm/kg</div></div>
+        <div class="s-tile"><div class="k">TRPM8 V<sub>1/2</sub> Shift (&amp; Thermal Equiv.)</div><div class="v" id="aw-vh">&minus;39.7 mV (&minus;7.9 &deg;C)</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- JAMES A. BROCK CORNEAL CORPUS -->
+  <section class="panel" id="brock">
+    <div class="sec-eyebrow">Intact Nerve-Terminal Electrophysiology &amp; Ultrastructure</div>
+    <div class="sec-hdr">
+      <h2>Five Empirical Pillars from James A. Brock's Guinea-Pig &amp; Mouse Corneal Corpus (1998–2019)</h2>
+      <span class="sec-note">Bridging focal suction-pipette nerve terminal impulses (NTIs) to femtoliter mitochondrial Ca<sup>2+</sup>/H<sup>+</sup> coupling</span>
+    </div>
+    <div class="methods-grid">
+      <div class="m-card">
+        <h3>1. Prolonged Holding &amp; L-Type Window Ca<sup>2+</sup></h3>
+        <p>Passing 30–60 s constant polarizing currents across focal corneal NTI seals (<strong>Brock et al., 1998, 2001</strong>; <strong>Carr, Pianova &amp; Brock, 2002</strong>, <em>J Gen Physiol</em>) proved cold endings sit chronically depolarized (&ge;&minus;40 to &minus;30 mV) at warm rest—parking the membrane directly inside the persistent window inward Ca<sup>2+</sup> current of neuronal <strong>Ca<sub>v</sub>1.3</strong> (Xu &amp; Lipscombe, 2001) and slow-inactivating <strong>Ca<sub>v</sub>1.2</strong> (Scroggs &amp; Fox, 1992).</p>
+      </div>
+      <div class="m-card">
+        <h3>2. Single-Terminal L-Type &amp; Two-Tier Clearance</h3>
+        <p>Confocal Ca<sup>2+</sup> imaging inside single intact corneal nerve terminals proved electrically evoked Ca<sup>2+</sup> entry is dominated by <strong>nifedipine/diltiazem-sensitive L-type VGCCs</strong> (<strong>Gover, Kao &amp; Weinreich, 2003</strong>), while brief spike trains are extruded linearly by <strong>PMCA</strong> (<strong>Gover et al., 2007</strong>) until prolonged bursts cross the ~300 nM cooperative MICU1/MCU threshold (Werth &amp; Thayer, 1994).</p>
+      </div>
+      <div class="m-card">
+        <h3>3. Intraburst Tapering &amp; Mobile Initiation</h3>
+        <p>Across 121 guinea-pig corneal cold units, <strong>Carr et al. (2003)</strong> and <strong>Carr, Pianova, McKemy &amp; Brock (2009)</strong> proved cyclical terminal burst pacemaking, progressive intraburst NTI amplitude tapering, directional dV/dt hysteresis, burst-to-tonic bifurcation (&lt;30 &deg;C), and mobile initiation loci—matching slow Na<sub>v</sub>1.8 inactivation (Blair &amp; Bean, 2002, 2003) in Figure 3B.</p>
+      </div>
+      <div class="m-card">
+        <h3>4. Mitochondria-Packed TRPM8+ Bulbar Endings</h3>
+        <p><strong>Ivanusic, Wood &amp; Brock (2013)</strong> and <strong>Alamri, Wood, Ivanusic &amp; Brock (2018)</strong> proved across mouse and guinea-pig cornea that functionally identified TRPM8+ cold receptors—segregated from ramifying TRPV1+ and <em>PIEZO2</em>+ endings (Bron et al., 2014)—terminate in large superficial <strong>bulbar "complex endings"</strong> packed with dense mitochondria (Hensel et al., 1974; Heppelmann et al., 2001).</p>
+      </div>
+      <div class="m-card">
+        <h3>5. Subtype-Selective Mouse Diabetic Loss</h3>
+        <p><strong>Alamri, Brock et al. (2019, <em>IOVS</em>)</strong> proved in mouse cornea that high-fat diet and STZ diabetes <strong>preferentially destroy TRPM8+ cold complex endings over quiescent TRPV1+ polymodal endings</strong>—directly validating our chronic matrix Ca<sup>2+</sup> overload prediction alongside <strong>Yorek MS et al. (2016)</strong> and <strong>George et al. (2022, <em>MCU</em> KO)</strong>.</p>
+      </div>
+      <div class="m-card">
+        <h3>6. &gt;340 mOsm/kg Mouse Osmosensory Threshold</h3>
+        <p>Adapting Brock's NTI rig to mouse eyes, <strong>Parra, Gonzalez-Gonzalez, Gallar &amp; Belmonte (2014, <em>Pain</em>)</strong> proved tear hyperosmolality linearly accelerates cold-receptor bursting right above <strong>340 mOsm/kg</strong> (+40 mOsm, matching our +42 to +89 mOsm/kg cutaneous Table 2 window!) while polymodal nociceptors require &ge;600 mOsm/kg.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- PUBLICATION FIGURES & EQUATIONS GALLERY -->
+  <section class="panel" id="figures">
+    <div class="sec-eyebrow">High-Resolution Manuscript Plates &amp; Display Equations</div>
+    <div class="sec-hdr">
+      <h2>Figures 1–6 &amp; Thermodynamic / 5-ODE Equations (Click Any Plate to Zoom)</h2>
+      <span class="sec-note">100% original Matplotlib vector schematics, ODE simulations, and archival corneal microscopy</span>
+    </div>
+
+    <div class="fig-grid">
+      <article class="fig-card">
+        <div class="fig-img-wrap" data-full="analysis/outputs/fig1_corneal_nerve_interface.png" data-cap="Figure 1. Anatomical Interface for Peripheral TRPM8 Osmosensation: Corneal Benchmark vs. Cutaneous Barrier.">
+          <img src="analysis/outputs/fig1_corneal_nerve_interface.png" alt="Figure 1 Corneal vs Cutaneous TRPM8 Interface" loading="lazy">
+          <span class="zoom-hint">&#x1F50D; Click to enlarge</span>
+        </div>
+        <div class="fig-body">
+          <div class="fig-tag">Figure 1 &bull; Cornea vs. Epidermal SG2 Frontier</div>
+          <h3>Anatomical Interface: Corneal Benchmark vs. Cutaneous Barrier</h3>
+          <p>Mouse corneal subbasal nerve whorl (A), vector comparison of avascular corneal TRPM8+ complex bulbar endings (&gt;340 mOsm; Parra 2014; Brock 2001, 2018) vs. 99.8%-shielded SG2-pruned cutaneous endings (+56 to +89 mOsm) above Ca<sub>v</sub>1.2 dermal arterioles (B), and 30 &mu;m triple-stain cross-section (C).</p>
+        </div>
+      </article>
+
+      <article class="fig-card">
+        <div class="fig-img-wrap" data-full="analysis/outputs/fig2_mechanistic_circuit.png" data-cap="Figure 2. Proposed Electro-Metabolic Relaxation Oscillator in Peripheral Cold/Osmo-Sensitive Terminals.">
+          <img src="analysis/outputs/fig2_mechanistic_circuit.png" alt="Figure 2 Mechanistic Circuit" loading="lazy">
+          <span class="zoom-hint">&#x1F50D; Click to enlarge</span>
+        </div>
+        <div class="fig-body">
+          <div class="fig-tag">Figure 2 &bull; Three-Phase Biophysical Mechanism</div>
+          <h3>Electro-Metabolic Relaxation Oscillator Circuit</h3>
+          <p>Basal poised state near &minus;45 mV at the Na<sub>v</sub>1.8 / Ca<sub>v</sub>1.3 window knee (A), osmo-thermal AP burst &amp; intact-terminal L-type Ca<sup>2+</sup> surge crossing the ~300 nM MICU1 gate (B), and TMBIM5–MICU1 mitochondrial H<sup>+</sup> pulse (pH<sub>i</sub> &rarr; 6.88) selectively closing cold/osmotic TRPM8 (C).</p>
+        </div>
+      </article>
+
+      <article class="fig-card wide">
+        <div class="fig-img-wrap" data-full="analysis/outputs/trpm8_oscillator_panels.png" data-cap="Figure 3. Electro-Metabolic Relaxation Oscillator: Spiking Dynamics and Falsifiable Predictions.">
+          <img src="analysis/outputs/trpm8_oscillator_panels.png" alt="Figure 3 Oscillator Spiking Panels" loading="lazy">
+          <span class="zoom-hint">&#x1F50D; Click to enlarge</span>
+        </div>
+        <div class="fig-body">
+          <div class="fig-tag">Figure 3 &bull; Core 8 Physiological &amp; Predictive Regimes</div>
+          <h3>Action-Potential Bursting, Pharmacological Dissociation &amp; Isothermal / Menthol Predictions</h3>
+          <p>Full 7-min spiking simulation &amp; single-burst zoom showing intraburst Na<sub>v</sub>1.8 slow-inactivation tapering and 180&deg; phase-locked pH<sub>i</sub> dips (A–B), pharmacological dissection under 1 &mu;M icilin, A-803467, nimodipine, and metabolic/FCCP uncoupling (C–F), isothermal +98 mOsm bursting at 33 &deg;C (G), and H<sup>+</sup>-insensitive menthol plateau (H).</p>
+        </div>
+      </article>
+
+      <article class="fig-card">
+        <div class="fig-img-wrap" data-full="analysis/outputs/fig4_human_genetics_mcu.png" data-cap="Figure 4. Human Genetic Variants and MCU/MICU1/TMBIM5 Perturbations in the Electro-Metabolic Oscillator.">
+          <img src="analysis/outputs/fig4_human_genetics_mcu.png" alt="Figure 4 Human Genetics and MCU KO" loading="lazy">
+          <span class="zoom-hint">&#x1F50D; Click to enlarge</span>
+        </div>
+        <div class="fig-body">
+          <div class="fig-tag">Figure 4 &bull; Human Genetics &amp; Diabetic MCU Paradox</div>
+          <h3>Human <em>TRPM8</em>, <em>SCN10A</em>, <em>MICU1</em>, <em>TMBIM5</em> &amp; Diabetic <em>MCU</em>-KO Mapping</h3>
+          <p>Fixed-parameter simulations of post-LASIK/neuralgia <em>TRPM8</em> GoF (D665N/R30Q), protective rs10166942[C] (&minus;89% gain), <em>SCN10A</em> GoF (I206M/G1662S), <em>MICU1</em> LoF (25&times; resting c<sub>m</sub>), <em>TMBIM5</em> uncoupling, and the &minus;97% matrix Ca<sup>2+</sup> rescue of diabetic <em>MCU</em> deletion.</p>
+        </div>
+      </article>
+
+      <article class="fig-card">
+        <div class="fig-img-wrap" data-full="analysis/outputs/fig5_neurovascular_pharmacology.png" data-cap="Figure 5. The Cav1.2/Cav1.3 Neurovascular and Dihydropyridine Pharmacology Conundrum (Bay K 8644 ± Nifedipine).">
+          <img src="analysis/outputs/fig5_neurovascular_pharmacology.png" alt="Figure 5 Neurovascular Pharmacology" loading="lazy">
+          <span class="zoom-hint">&#x1F50D; Click to enlarge</span>
+        </div>
+        <div class="fig-body">
+          <div class="fig-tag">Figure 5 &bull; Cutaneous Hemodynamic Confounding</div>
+          <h3>Dihydropyridine Pharmacology: Avascular Cornea vs. Perfused Skin</h3>
+          <p>Demonstrates clean (&minus;)-(S)-Bay K 8644 plateau lock-in and nifedipine reversal in avascular/clamped tissue (&Delta;Flow = 0) vs. microvascular warming and osmotic-washout masking in perfused skin, resolved via ACEi/ARB vasodilator controls.</p>
+        </div>
+      </article>
+
+      <article class="fig-card wide">
+        <div class="fig-img-wrap" data-full="analysis/outputs/power_comparison.png" data-cap="Figure 6. Psychrometric Sign-Inversion Trap and Within-Subject Statistical Power for Human Falsification Trials.">
+          <img src="analysis/outputs/power_comparison.png" alt="Figure 6 Psychrometric Confounding and Power" loading="lazy">
+          <span class="zoom-hint">&#x1F50D; Click to enlarge</span>
+        </div>
+        <div class="fig-body">
+          <div class="fig-tag">Figure 6 &bull; Monte Carlo Psychrometrics (N = 2,000)</div>
+          <h3>Outdoor RH Sign-Inversion Trap &amp; Small-N Within-Subject Crossover Power</h3>
+          <p>Proves why outdoor relative humidity inverts indoor winter drying (0 &deg;C 80% RH &rarr; 21 &deg;C 19.7% RH, VPD 1.99 kPa), how dew-point-derived Local VPD recovers the physical signal, and why paired crossovers achieve 80–96% power at N = 10–20.</p>
+        </div>
+      </article>
+    </div>
+
+    <div class="eq-grid">
+      <div class="eq-card">
+        <div class="fig-img-wrap" data-full="analysis/outputs/eq_block1_thermodynamics.png" data-cap="Equations 1–2: Osmo-Thermal &amp; Proton-Coupled TRPM8 Gating.">
+          <img src="analysis/outputs/eq_block1_thermodynamics.png" alt="Equations 1 and 2" loading="lazy">
+        </div>
+        <div class="fig-body"><h3>Equations 1–2: Osmo-Thermal &amp; H<sup>+</sup> Gating</h3></div>
+      </div>
+      <div class="eq-card">
+        <div class="fig-img-wrap" data-full="analysis/outputs/eq_block2_water_activity.png" data-cap="Equations 3–4: Trans-Epidermal Water-Activity Leverage (-55.8 Osm/kg).">
+          <img src="analysis/outputs/eq_block2_water_activity.png" alt="Equations 3 and 4" loading="lazy">
+        </div>
+        <div class="fig-body"><h3>Equations 3–4: Water-Activity Leverage (&minus;55.8 Osm/kg)</h3></div>
+      </div>
+      <div class="eq-card">
+        <div class="fig-img-wrap" data-full="analysis/outputs/eq_block3_ode_system.png" data-cap="Equations 5–7: Coupled 5-State Electro-Metabolic Relaxation Oscillator.">
+          <img src="analysis/outputs/eq_block3_ode_system.png" alt="Equations 5 to 7" loading="lazy">
+        </div>
+        <div class="fig-body"><h3>Equations 5–7: 5-Variable Electro-Metabolic ODEs</h3></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7 POPPERIAN FALSIFICATIONS -->
+  <section class="panel" id="falsifications">
+    <div class="sec-eyebrow">Open Community Experimental Benchmarks (Table 5)</div>
+    <div class="sec-hdr">
+      <h2>Seven Pre-Specified Popperian Falsification Criteria</h2>
+      <span class="sec-note">Searchable across human psychophysical crossovers, avascular cornea, and cellular patch-clamp</span>
+    </div>
+    <div class="tbl-toolbar">
+      <input type="text" class="search-input" id="fals-search" placeholder="Filter kill-switches (e.g. mannitol, hydrogel, Bay K, HEPES, PIEZO2, VPD)...">
+    </div>
+    <div class="tbl-scroll">
+      <table class="data-tbl" id="fals-tbl">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Failure Mode / Kill-Switch</th>
+            <th>Competing Rival Hypothesis</th>
+            <th>Crucial Decisive Test</th>
+            <th>Refutation Criterion (Model Falsified If...)</th>
+            <th>Target N</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>1</strong></td>
+            <td><strong>Stratum Corneum &amp; Vascular Buffering</strong></td>
+            <td>Hydrophobic SC + SG2 tight junctions &amp; dermal perfusion (~290 mOsm/kg) block &gt;99.95% of surface &Delta;a<sub>w</sub>.</td>
+            <td><strong>Protocol H2-Gel (Zero-Evaporation Submersion, J<sub>evap</sub> &equiv; 0):</strong> Paired Dry vs. Hydrated hands into identical 22.0 &deg;C hydrogel (IR-T matched &plusmn;0.2 &deg;C); plus 600–900 mOsm NaCl &amp; mannitol vs. 300 mOsm gel.</td>
+            <td>Dry-preconditioned or hyperosmotic-submerged skin feels equal or warmer than hydrated/isoosmotic controls (p &gt; 0.05, d<sub>z</sub> &lt; 0.2).</td>
+            <td>N = 15–21 paired</td>
+          </tr>
+          <tr>
+            <td><strong>2</strong></td>
+            <td><strong>Pure Evaporative Cooling</strong></td>
+            <td>Dry-air cold excess is 100% latent heat loss (L<sub>v</sub> &approx; 2.45 MJ/kg).</td>
+            <td><strong>Protocol H2 (Paired-Forearm Vapor Occlusion):</strong> Petrolatum or Tegaderm barrier on one dry forearm vs. bare contralateral forearm, IR-T matched.</td>
+            <td>Vapor occlusion eliminates the entire perceived cold excess once IR surface temperatures match.</td>
+            <td>N = 15–20 paired</td>
+          </tr>
+          <tr>
+            <td><strong>3</strong></td>
+            <td><strong>Systemic Water-Bolus Sign Paradox</strong></td>
+            <td>Hypoosmolarity inhibits TRPM8 (Quallo 2015); water chills stem from hepatic TRPV4 osmopressor vasoconstriction (Lechner 2011; May 2011).</td>
+            <td><strong>Protocol H4 (Blinded 2&times;2 Water Crossover + IR Thermography):</strong> 500 mL 37 &deg;C water vs. 37 &deg;C saline vs. 15 &deg;C saline vs. 15 &deg;C water, tracking fingertip IR-T &amp; shiver for 30 min.</td>
+            <td>37 &deg;C water triggers chills only after fingertip IR cooling (or fails when skin T is clamped while 15 &deg;C saline succeeds).</td>
+            <td>N = 16–20 crossover</td>
+          </tr>
+          <tr>
+            <td><strong>4</strong></td>
+            <td><strong>Non-TRPM8 Osmosensor Specificity</strong></td>
+            <td>Hyperosmolar responses stem from TRPV1, TRPV4, TRPA1, ASICs, or <em>PIEZO2</em> mechanonociceptors (Bron, Wood, Brock &amp; Ivanusic, 2014).</td>
+            <td><strong>Mannitol vs. NaCl</strong> (&lt;600 mOsm/kg below polymodal threshold; Parra 2014) + topical TRPM8 blockade/desensitization; plus avascular cornea (&minus;)-(S) vs. (+)-(R)-Bay K 8644 + HC-030031.</td>
+            <td>Effect occurs only with NaCl (not mannitol) or survives complete TRPM8 blockade/desensitization.</td>
+            <td>N = 12–16 / ex vivo</td>
+          </tr>
+          <tr>
+            <td><strong>5</strong></td>
+            <td><strong>Pure Labeled-Line &amp; Temporal Coding</strong></td>
+            <td>Qualia differences (cornea vs. skin; cool vs. wet/shiver) reflect central projections only, not H<sup>+</sup>-clocked burst structure.</td>
+            <td><strong>Protocols H1 &amp; H3:</strong> Isothermal 34 &deg;C hypertonic puffs across V<sub>1</sub> territories; <strong>H3A</strong> grip acidosis comparing menthol vs. 24 &deg;C cooling; <strong>H3B</strong> 0.03 Hz sinusoidal vs. steady 24 &deg;C Peltier.</td>
+            <td>Tissue acidosis affects menthol and cold identically, AND 0.03 Hz oscillatory vs. steady cooling produce indistinguishable wet/chill qualia.</td>
+            <td>N = 15–20 paired</td>
+          </tr>
+          <tr>
+            <td><strong>6</strong></td>
+            <td><strong>Mitochondrial H<sup>+</sup> vs. PI(4,5)P<sub>2</sub> Clock</strong></td>
+            <td>Burst reset is driven purely by Ca<sup>2+</sup>-PLC&delta; depletion of PI(4,5)P<sub>2</sub> (Rohacs 2005; Olivares 2015) or K<sub>Ca</sub> rather than mitochondrial H<sup>+</sup>.</td>
+            <td><strong>Cellular DRG/TG Patch-Clamp &amp; Corneal NTI:</strong> Heavy cytosolic pH clamping (50–100 mM HEPES) vs. intracellular diC<sub>8</sub>-PIP<sub>2</sub>, alongside Ru360 vs. PMCA blockade (Gover 2007) during prolonged low-drive cold vs. menthol.</td>
+            <td>Clamping pH<sub>i</sub> fails to alter cold/osmotic oscillatory reset while PIP<sub>2</sub> abolishes adaptation identically for cold and menthol.</td>
+            <td>n = 12–20 cells/arm</td>
+          </tr>
+          <tr>
+            <td><strong>7</strong></td>
+            <td><strong>Ecological &amp; Neurovascular Negligibility</strong></td>
+            <td>Ambient VPD (0.3–2.2 kPa) is negligible in intact skin; clinical DHP effects are 100% vascular warming.</td>
+            <td><strong>Dew-Point Mobile EMA (<a href="app/index.html">Web App</a>) + Chronic DHP vs. ACEi/ARB Protocol H2-Gel:</strong> Within-subject &beta;<sub>VPD|T</sub> + IR-clamped DHP vs. ACEi/ARB users with PPG perfusion covariate.</td>
+            <td>Within-subject &beta;<sub>VPD|T</sub> &approx; 0 (p &gt; 0.05) after air-T &amp; occlusion control, and DHP vs. ACEi/ARB show zero difference once skin T &amp; PPG match.</td>
+            <td>N &ge; 20 EMA; 20/arm</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- SOFTWARE, DOWNLOADS & CITATION -->
+  <section class="panel" id="downloads">
+    <div class="sec-eyebrow">Open Reproducibility &amp; Companion Software</div>
+    <div class="sec-hdr">
+      <h2>Preprint PDF, Python Simulation Scripts &amp; Mobile Psychrometric App</h2>
+      <span class="sec-note">100% open-source under MIT / CC-BY 4.0</span>
+    </div>
+    <div class="dl-grid">
+      <div class="dl-card">
+        <div>
+          <h3>Open Preprint Manuscript (PDF)</h3>
+          <p>Complete typeset manuscript including Equations 1–7, Tables 1–5, Figures 1–6, and all 120 peer-reviewed references (Brock corneal lineage, human genetics, and neurovascular pharmacology).</p>
+        </div>
+        <a class="btn sky" href="assets/TRPM8_Electro_Metabolic_Oscillator_Preprint_Yorek.pdf" target="_blank">&#x1F4C4; Download Preprint PDF</a>
+      </div>
+      <div class="dl-card">
+        <div>
+          <h3>Dew-Point VPD &amp; N-of-1 Psychophysics App</h3>
+          <p>Offline-capable PWA computing true indoor-corrected Local VPD from outdoor dew point (eliminating seasonal outdoor-RH sign inversion), paired with 4-axis qualia EMA logging and CSV export.</p>
+        </div>
+        <a class="btn violet" href="app/index.html">&#x1F4F1; Launch Companion Web App</a>
+      </div>
+      <div class="dl-card">
+        <div>
+          <h3>Reproducible Python 3.12 Suite (<code>uv</code>)</h3>
+          <p>PEP 723 self-bootstrapping scripts: <code>trpm8_oscillator_ode.py</code> (29 ODE regimes, Radau/BDF), <code>build_drive_figures.py</code>, <code>power_and_simulation.py</code>, and <code>analyze_ema_export.py</code>.</p>
+        </div>
+        <a class="btn emerald" href="https://github.com/yorekms/trpm8-osmo-cold" target="_blank" rel="noopener">&#x1F4BB; View GitHub Repository</a>
+      </div>
+    </div>
+
+    <pre class="cite-box">@article{Yorek2026TRPM8Oscillator,
+  author  = {Yorek, Matthew S.},
+  title   = {An Electro-Metabolic Relaxation Oscillator Model of Peripheral {TRPM8} Osmosensation and Cold Coding: Human Genetic, Mitochondrial, and Neurovascular Predictions},
+  year    = {2026},
+  note    = {Open Preprint \&amp; Interactive Biophysical Simulator, Department of Anesthesiology, University of Virginia},
+  url     = {https://yorekms.github.io/trpm8-osmo-cold/}
+}</pre>
+  </section>
+
+  <footer>
+    <div>&copy; 2026 Matthew S. Yorek, M.S. &mdash; Department of Anesthesiology, University of Virginia &bull; Literature links include <a href="https://europepmc.org/" target="_blank" rel="noopener">Europe PMC</a> &amp; PubMed</div>
+    <div style="display:flex;gap:14px;flex-wrap:wrap;">
+      <a href="https://my-scientist.carrd.co" target="_blank" rel="noopener">my-scientist.carrd.co &nearr;</a>
+      <a href="https://my-scientific-software.carrd.co" target="_blank" rel="noopener">my-scientific-software.carrd.co &nearr;</a>
+      <a href="https://yorekms.github.io/condensate-pharmacology/" target="_blank" rel="noopener">Condensate Pharmacology Hub &nearr;</a>
+      <a href="https://yorekms.github.io/seizure-transcriptomics-workbench/" target="_blank" rel="noopener">Seizure Workbench &nearr;</a>
+    </div>
+  </footer>
+</div>
+
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true">
+  <button type="button" class="lightbox-close" id="lb-close">&times; Close (Esc)</button>
+  <img id="lb-img" src="" alt="">
+  <div class="lightbox-cap" id="lb-cap"></div>
+</div>
+
+<script>
+(function() {
+  'use strict';
+
+  // ==================== EXACT 5-ODE BIOPHYSICAL INTEGRATOR (Equations 1-7) ====================
+  const PRESETS = {
+    ctrl:          { temp: 25.0, osm: 0,   icilin: 50,   menthol: 0,  psi: 1.00, cal: 1.00, mcu: 1.00, perf: 0.00, bNav: false, bCal: false, vhM8: 0,   exprM8: 1.0, vhNav: 0,  kdMicu: 0.30, nMicu: 5.0, tmbim5: 1.0, vhCal: 0 },
+    brock_dry:     { temp: 33.0, osm: 89,  icilin: 0,    menthol: 0,  psi: 1.00, cal: 1.00, mcu: 1.00, perf: 0.00, bNav: false, bCal: false, vhM8: 0,   exprM8: 1.0, vhNav: 0,  kdMicu: 0.30, nMicu: 5.0, tmbim5: 1.0, vhCal: 0 },
+    isothermal98:  { temp: 33.0, osm: 98,  icilin: 0,    menthol: 0,  psi: 1.00, cal: 1.00, mcu: 1.00, perf: 0.00, bNav: false, bCal: false, vhM8: 0,   exprM8: 1.0, vhNav: 0,  kdMicu: 0.30, nMicu: 5.0, tmbim5: 1.0, vhCal: 0 },
+    skin_dry22:    { temp: 22.0, osm: 56,  icilin: 0,    menthol: 0,  psi: 1.00, cal: 1.00, mcu: 1.00, perf: 0.00, bNav: false, bCal: false, vhM8: 0,   exprM8: 1.0, vhNav: 0,  kdMicu: 0.30, nMicu: 5.0, tmbim5: 1.0, vhCal: 0 },
+    skin_hyd22:    { temp: 22.0, osm: 0,   icilin: 0,    menthol: 0,  psi: 1.00, cal: 1.00, mcu: 1.00, perf: 0.00, bNav: false, bCal: false, vhM8: 0,   exprM8: 1.0, vhNav: 0,  kdMicu: 0.30, nMicu: 5.0, tmbim5: 1.0, vhCal: 0 },
+    menthol:       { temp: 25.0, osm: 0,   icilin: 0,    menthol: 35, psi: 1.00, cal: 1.00, mcu: 1.00, perf: 0.00, bNav: false, bCal: false, vhM8: 0,   exprM8: 1.0, vhNav: 0,  kdMicu: 0.30, nMicu: 5.0, tmbim5: 1.0, vhCal: 0 },
+    trpm8_gof:     { temp: 33.0, osm: 55,  icilin: 0,    menthol: 0,  psi: 1.00, cal: 1.00, mcu: 1.00, perf: 0.00, bNav: false, bCal: false, vhM8: -28, exprM8: 1.0, vhNav: 0,  kdMicu: 0.30, nMicu: 5.0, tmbim5: 1.0, vhCal: 0 },
+    scn10a_gof:    { temp: 25.0, osm: 0,   icilin: 25,   menthol: 0,  psi: 1.00, cal: 1.00, mcu: 1.00, perf: 0.00, bNav: false, bCal: false, vhM8: 0,   exprM8: 1.0, vhNav: -4, kdMicu: 0.30, nMicu: 5.0, tmbim5: 1.0, vhCal: 0 },
+    micu1_lof:     { temp: 25.0, osm: 0,   icilin: 50,   menthol: 0,  psi: 1.00, cal: 1.00, mcu: 1.00, perf: 0.00, bNav: false, bCal: false, vhM8: 0,   exprM8: 1.0, vhNav: 0,  kdMicu: 0.14, nMicu: 1.8, tmbim5: 1.0, vhCal: 0 },
+    diabetic:      { temp: 25.0, osm: 0,   icilin: 70,   menthol: 0,  psi: 0.85, cal: 1.00, mcu: 1.00, perf: 0.00, bNav: false, bCal: false, vhM8: 0,   exprM8: 1.0, vhNav: 0,  kdMicu: 0.30, nMicu: 5.0, tmbim5: 0.45, vhCal: 0 },
+    diabetic_mcuko:{ temp: 25.0, osm: 0,   icilin: 70,   menthol: 0,  psi: 0.85, cal: 1.00, mcu: 0.03, perf: 0.00, bNav: false, bCal: false, vhM8: 0,   exprM8: 1.0, vhNav: 0,  kdMicu: 0.30, nMicu: 5.0, tmbim5: 0.45, vhCal: 0 },
+    bayk:          { temp: 33.0, osm: 82,  icilin: 0,    menthol: 0,  psi: 1.00, cal: 1.60, mcu: 1.00, perf: 0.00, bNav: false, bCal: false, vhM8: 0,   exprM8: 1.0, vhNav: 0,  kdMicu: 0.30, nMicu: 5.0, tmbim5: 1.0, vhCal: -4 },
+    perf_nif:      { temp: 33.0, osm: 98,  icilin: 0,    menthol: 0,  psi: 1.00, cal: 0.60, mcu: 1.00, perf: 0.91, bNav: false, bCal: false, vhM8: 0,   exprM8: 1.0, vhNav: 0,  kdMicu: 0.30, nMicu: 5.0, tmbim5: 1.0, vhCal: 0 }
+  };
+
+  let extra = { vhM8: 0, exprM8: 1.0, vhNav: 0, kdMicu: 0.30, nMicu: 5.0, tmbim5: 1.0, vhCal: 0 };
+
+  function sig(x) {
+    const z = x < -40 ? -40 : (x > 40 ? 40 : x);
+    return 1.0 / (1.0 + Math.exp(-z));
+  }
+
+  function simulateODE(cfg) {
+    const E_L = -52.0, g_L = 0.95, E_M8 = 0.0, E_Na = 55.0, E_Ca = 60.0;
+    const g_M8_max = 1.85 * cfg.exprM8;
+    const g_nav = cfg.bNav ? 0.0 : 0.27;
+    const g_cal = cfg.bCal ? 0.0 : (0.20 * cfg.cal);
+    const H0 = 50.12, k_rate = 1.35;
+    const dT_vasc = 2.2 * cfg.perf;
+    const wash = 0.55 * cfg.perf;
+    const eff_T = cfg.temp + dT_vasc;
+    const eff_osm = cfg.osm * Math.max(0.0, 1.0 - wash);
+    const vhCal = cfg.vhCal !== 0 ? cfg.vhCal : (-5.0 * Math.max(0.0, cfg.cal - 1.0));
+
+    function deriv(t, y, out) {
+      const V = y[0];
+      const ca = Math.max(0.04, y[1]);
+      const cm = Math.max(0.0, y[2]);
+      const dh = Math.max(0.0, y[3]);
+      const s = Math.min(1.0, Math.max(0.01, y[4]));
+      const on = (t >= 60.0 && t <= 360.0);
+
+      const T_now = on ? eff_T : cfg.temp;
+      const ic_now = on ? cfg.icilin : 0.0;
+      const men_now = on ? cfg.menthol : 0.0;
+      const osm_now = on ? eff_osm : 0.0;
+
+      const vh = 2.0 + 5.0 * (T_now - 25.0) - 0.72 * osm_now + cfg.vhM8;
+      const ic_f = ic_now > 0 ? ic_now / (ic_now + 360.0) : 0.0;
+      const ps = sig((V - (vh - 250.0 * ic_f)) / 13.0);
+      const pm = men_now > 0 ? sig((V - (vh - 82.0 * (men_now / (men_now + 60.0)))) / 13.0) : 0.0;
+
+      const s_eff = s + (1.0 - s) * (0.65 * ic_f * ic_f);
+      const peff = Math.max(ps * s_eff, pm * (0.98 + 0.02 * s));
+      const I_M8 = g_M8_max * peff * (V - E_M8);
+
+      const m_nav = sig((V + 34.0 - cfg.vhNav) / 3.2) * (1.0 - 0.76 * sig((V + 16.0 - cfg.vhNav) / 3.5));
+      const I_Nav = g_nav * m_nav * (V - E_Na);
+
+      const r_ca = ca / 0.65;
+      const m_cal = sig((V + 27.0 - vhCal) / 3.2) / (1.0 + r_ca * r_ca);
+      const I_CaL = g_cal * m_cal * (V - E_Ca);
+
+      const ca2 = ca * ca;
+      const I_L = (g_L + 0.16 * (ca2 / (ca2 + 0.2025))) * (V - E_L);
+      out[0] = -k_rate * (I_M8 + I_Nav + I_CaL + I_L) / 1.4;
+
+      const Jin_m8 = 0.0040 * Math.max(0.0, -I_M8) * (1.0 + 1.8 * ic_f);
+      const Jin_cal = 0.0260 * Math.max(0.0, -I_CaL);
+      const J_pmca = 0.34 * (ca - 0.095);
+      const c_n = Math.pow(ca, cfg.nMicu);
+      const kd_n = Math.pow(cfg.kdMicu, cfg.nMicu);
+      const J_mcu = cfg.mcu * cfg.psi * 0.50 * (c_n / (c_n + kd_n));
+      const J_mout = 0.075 * cm;
+
+      out[1] = k_rate * (Jin_m8 + Jin_cal - J_pmca - J_mcu + J_mout);
+      out[2] = k_rate * (J_mcu - J_mout);
+      out[3] = k_rate * (16.5 * cfg.tmbim5 * J_mcu - dh / 11.0);
+      const s_inf = 1.0 / (1.0 + Math.pow((H0 + dh) / 74.0, 8.0));
+      out[4] = k_rate * (s_inf - s) / 9.0;
+    }
+
+    const dt = 0.05, tEnd = 420.0;
+    const steps = Math.round(tEnd / dt);
+    const stride = 3; // record every 0.15 s -> 2801 points
+    const nOut = Math.floor(steps / stride) + 1;
+    const tArr = new Float64Array(nOut);
+    const vArr = new Float64Array(nOut);
+    const caArr = new Float64Array(nOut);
+    const cmArr = new Float64Array(nOut);
+    const phArr = new Float64Array(nOut);
+
+    let y = [-48.0, 0.10, 0.0, 0.1, 0.98];
+    const k1 = [0,0,0,0,0], k2 = [0,0,0,0,0], k3 = [0,0,0,0,0], k4 = [0,0,0,0,0], yt = [0,0,0,0,0];
+
+    let idx = 0;
+    for (let i = 0; i <= steps; i++) {
+      const t = i * dt;
+      if (i % stride === 0 && idx < nOut) {
+        tArr[idx] = t;
+        vArr[idx] = y[0];
+        caArr[idx] = Math.max(40.0, y[1] * 1000.0);
+        cmArr[idx] = Math.max(0.0, y[2]);
+        phArr[idx] = -Math.log10((H0 + Math.max(0.0, y[3])) * 1e-9);
+        idx++;
+      }
+      if (i === steps) break;
+      deriv(t, y, k1);
+      for (let j = 0; j < 5; j++) yt[j] = y[j] + 0.5 * dt * k1[j];
+      deriv(t + 0.5 * dt, yt, k2);
+      for (let j = 0; j < 5; j++) yt[j] = y[j] + 0.5 * dt * k2[j];
+      deriv(t + 0.5 * dt, yt, k3);
+      for (let j = 0; j < 5; j++) yt[j] = y[j] + dt * k3[j];
+      deriv(t + dt, yt, k4);
+      for (let j = 0; j < 5; j++) {
+        y[j] += (dt / 6.0) * (k1[j] + 2*k2[j] + 2*k3[j] + k4[j]);
+      }
+    }
+
+    // Metrics inside stimulus window [60, 360] s
+    let caMax = 0, caMin = 1e9, phMin = 99, cmSum = 0, cmCnt = 0;
+    const winCa = [];
+    for (let i = 0; i < idx; i++) {
+      if (tArr[i] >= 60.0 && tArr[i] <= 360.0) {
+        const c = caArr[i];
+        winCa.push(c);
+        if (c > caMax) caMax = c;
+        if (c < caMin) caMin = c;
+        if (phArr[i] < phMin) phMin = phArr[i];
+        cmSum += cmArr[i];
+        cmCnt++;
+      }
+    }
+    const tailStart = Math.floor(winCa.length / 3);
+    let tMax = 0, tMin = 1e9;
+    for (let i = tailStart; i < winCa.length; i++) {
+      if (winCa[i] > tMax) tMax = winCa[i];
+      if (winCa[i] < tMin) tMin = winCa[i];
+    }
+    const tailAmp = Math.max(0, tMax - tMin);
+
+    // Prominent burst peak count (prominence >= 60 nM, distance >= 9 s)
+    let peaks = 0, lastPk = -999;
+    for (let i = 4; i < winCa.length - 4; i++) {
+      const c = winCa[i];
+      if (c > winCa[i-1] && c >= winCa[i+1] && c > winCa[i-4] && c > winCa[i+4] && (i - lastPk) > 60) {
+        let leftMin = c, rightMin = c;
+        for (let k = Math.max(0, i - 220); k < i; k++) if (winCa[k] < leftMin) leftMin = winCa[k];
+        for (let k = i + 1; k < Math.min(winCa.length, i + 220); k++) if (winCa[k] < rightMin) rightMin = winCa[k];
+        if (c - Math.max(leftMin, rightMin) >= 60.0) {
+          peaks++;
+          lastPk = i;
+        }
+      }
+    }
+    const cmMean = cmCnt ? (cmSum / cmCnt) : 0;
+
+    // Synthesize biophysical spikes if enabled and Nav1.8 is not blocked
+    let spT = null, spV = null;
+    if (cfg.showSpikes && !cfg.bNav) {
+      const dtSp = 0.025; // fast browser visual resolution
+      const nSpPts = Math.floor(tEnd / dtSp);
+      spT = new Float32Array(nSpPts);
+      spV = new Float32Array(nSpPts);
+      let seed = 1717;
+      const rand = () => { seed = (seed * 1664525 + 1013904223) >>> 0; return (seed / 4294967296) - 0.5; };
+      let phase = 0;
+      for (let i = 0; i < nSpPts; i++) {
+        const ts = i * dtSp;
+        spT[i] = ts / 60.0;
+        const pos = ts / (dt * stride);
+        const i0 = Math.min(idx - 2, Math.max(0, Math.floor(pos)));
+        const frac = pos - i0;
+        const vb = vArr[i0] * (1 - frac) + vArr[i0 + 1] * frac;
+        const dvdt = (vArr[i0 + 1] - vArr[i0]) / (dt * stride);
+        spV[i] = vb + rand() * 0.9;
+
+        let rate = 0.10;
+        if (dvdt < -0.5) rate = 0.04;
+        else if (vb >= -48.5) {
+          const drive = 1.0 / (1.0 + Math.exp(-(vb + 35.0) / 5.5));
+          const blk = 1.0 - 0.65 / (1.0 + Math.exp(-(vb + 16.0) / 1.8));
+          rate = (0.28 + 5.8 * drive) * blk;
+        }
+        phase += rate * dtSp * (1.0 + 0.16 * rand());
+        if (phase >= 1.0 && i < nSpPts - 3) {
+          phase = 0;
+          const inact = 1.0 / (1.0 + Math.exp((vb + 20.5) / 3.2));
+          const pk = 48.0 * inact + (vb + 8.0) * (1.0 - inact);
+          spV[i] = Math.max(spV[i], pk);
+          spV[i + 1] = vb - 3.5 * inact;
+        }
+      }
+    }
+
+    return { tArr, vArr, caArr, cmArr, phArr, n: idx, peaks, caMax, tailAmp, phMin, cmMean, spT, spV };
+  }
+
+  function drawMainCanvas(cv, sim) {
+    const dpr = window.devicePixelRatio || 1;
+    const rect = cv.getBoundingClientRect();
+    cv.width = Math.round(rect.width * dpr);
+    cv.height = Math.round(rect.height * dpr);
+    const ctx = cv.getContext('2d');
+    ctx.scale(dpr, dpr);
+    const W = rect.width, H = rect.height;
+    const padL = 46, padR = 52, padT = 14, padB = 26;
+    const pw = W - padL - padR, ph = H - padT - padB;
+
+    ctx.clearRect(0, 0, W, H);
+
+    // Stimulus shaded band (1 to 6 min)
+    const x1 = padL + (1.0 / 7.0) * pw, x6 = padL + (6.0 / 7.0) * pw;
+    ctx.fillStyle = 'rgba(56, 189, 248, 0.06)';
+    ctx.fillRect(x1, padT, x6 - x1, ph);
+
+    // Grid lines
+    ctx.strokeStyle = 'rgba(148, 163, 184, 0.14)';
+    ctx.lineWidth = 1;
+    for (let g = 0; g <= 4; g++) {
+      const yg = padT + (g / 4) * ph;
+      ctx.beginPath(); ctx.moveTo(padL, yg); ctx.lineTo(padL + pw, yg); ctx.stroke();
+    }
+
+    const xOfMin = m => padL + (m / 7.0) * pw;
+    const yOfVm = v => padT + (1.0 - (v - (-68)) / (64 - (-68))) * ph;
+    const cTop = Math.max(620, Math.ceil(sim.caMax / 100) * 100 + 40);
+    const yOfCa = c => padT + (1.0 - (c - 40) / (cTop - 40)) * ph;
+    const yOfPh = p => padT + (1.0 - (p - 6.75) / (7.38 - 6.75)) * ph;
+
+    // 1. Vm spikes or slow envelope
+    ctx.strokeStyle = 'rgba(148, 163, 184, 0.62)';
+    ctx.lineWidth = sim.spT ? 0.85 : 1.5;
+    ctx.beginPath();
+    if (sim.spT) {
+      for (let i = 0; i < sim.spT.length; i++) {
+        const x = xOfMin(sim.spT[i]), y = yOfVm(sim.spV[i]);
+        if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+      }
+    } else {
+      for (let i = 0; i < sim.n; i++) {
+        const x = xOfMin(sim.tArr[i] / 60.0), y = yOfVm(sim.vArr[i]);
+        if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+      }
+    }
+    ctx.stroke();
+
+    // 2. [Ca2+]i curve
+    ctx.strokeStyle = '#38bdf8';
+    ctx.lineWidth = 2.2;
+    ctx.beginPath();
+    for (let i = 0; i < sim.n; i++) {
+      const x = xOfMin(sim.tArr[i] / 60.0), y = yOfCa(sim.caArr[i]);
+      if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+    }
+    ctx.stroke();
+
+    // 3. pHi curve
+    ctx.strokeStyle = '#f43f5e';
+    ctx.lineWidth = 1.7;
+    ctx.beginPath();
+    for (let i = 0; i < sim.n; i++) {
+      const x = xOfMin(sim.tArr[i] / 60.0), y = yOfPh(sim.phArr[i]);
+      if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+    }
+    ctx.stroke();
+
+    // Stimulus bar
+    ctx.strokeStyle = '#e2e8f0';
+    ctx.lineWidth = 3;
+    ctx.beginPath(); ctx.moveTo(x1, padT + ph - 3); ctx.lineTo(x6, padT + ph - 3); ctx.stroke();
+
+    // Axes labels
+    ctx.fillStyle = '#94a3b8';
+    ctx.font = '11px -apple-system, sans-serif';
+    ctx.textAlign = 'right';
+    [-60, -20, 20, 50].forEach(v => ctx.fillText(v + ' mV', padL - 5, yOfVm(v) + 3));
+    ctx.textAlign = 'left';
+    ctx.fillStyle = '#38bdf8';
+    [100, 300, 500, cTop > 700 ? 800 : 600].forEach(c => {
+      if (c <= cTop) ctx.fillText(c + ' nM', padL + pw + 5, yOfCa(c) + 3);
+    });
+    ctx.textAlign = 'center';
+    ctx.fillStyle = '#94a3b8';
+    for (let m = 0; m <= 7; m++) ctx.fillText(m + ' min', xOfMin(m), H - 6);
+  }
+
+  function drawMitoCanvas(cv, sim) {
+    const dpr = window.devicePixelRatio || 1;
+    const rect = cv.getBoundingClientRect();
+    cv.width = Math.round(rect.width * dpr);
+    cv.height = Math.round(rect.height * dpr);
+    const ctx = cv.getContext('2d');
+    ctx.scale(dpr, dpr);
+    const W = rect.width, H = rect.height;
+    const padL = 46, padR = 52, padT = 12, padB = 24;
+    const pw = W - padL - padR, ph = H - padT - padB;
+
+    ctx.clearRect(0, 0, W, H);
+    const xOfMin = m => padL + (m / 7.0) * pw;
+    const yOfCm = c => padT + (1.0 - c / 7.2) * ph;
+    const yOfVe = v => padT + (1.0 - (v - (-58)) / (-8 - (-58))) * ph;
+
+    // Toxic overload zone >= 4.0 a.u.
+    const yOver = yOfCm(4.0);
+    ctx.fillStyle = 'rgba(244, 63, 94, 0.09)';
+    ctx.fillRect(padL, padT, pw, yOver - padT);
+    ctx.setLineDash([4, 4]);
+    ctx.strokeStyle = 'rgba(244, 63, 94, 0.55)';
+    ctx.beginPath(); ctx.moveTo(padL, yOver); ctx.lineTo(padL + pw, yOver); ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Slow envelope V(t)
+    ctx.strokeStyle = 'rgba(167, 139, 250, 0.72)';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    for (let i = 0; i < sim.n; i++) {
+      const x = xOfMin(sim.tArr[i] / 60.0), y = yOfVe(sim.vArr[i]);
+      if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+    }
+    ctx.stroke();
+
+    // Matrix Ca2+ cm(t)
+    ctx.strokeStyle = '#f59e0b';
+    ctx.lineWidth = 2.2;
+    ctx.beginPath();
+    for (let i = 0; i < sim.n; i++) {
+      const x = xOfMin(sim.tArr[i] / 60.0), y = yOfCm(Math.min(7.1, sim.cmArr[i]));
+      if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+    }
+    ctx.stroke();
+
+    ctx.fillStyle = '#f59e0b';
+    ctx.font = '11px -apple-system, sans-serif';
+    ctx.textAlign = 'right';
+    [0, 2, 4, 6].forEach(c => ctx.fillText(c.toFixed(1), padL - 6, yOfCm(c) + 3));
+    ctx.textAlign = 'left';
+    ctx.fillStyle = '#c4b5fd';
+    [-50, -30, -15].forEach(v => ctx.fillText(v + ' mV', padL + pw + 5, yOfVe(v) + 3));
+    ctx.textAlign = 'center';
+    ctx.fillStyle = '#94a3b8';
+    for (let m = 0; m <= 7; m++) ctx.fillText(m + ' min', xOfMin(m), H - 5);
+  }
+
+  function runAndRender() {
+    const temp = parseFloat(document.getElementById('sl-temp').value);
+    const osm = parseFloat(document.getElementById('sl-osm').value);
+    const icilin = parseFloat(document.getElementById('sl-icilin').value);
+    const menthol = parseFloat(document.getElementById('sl-menthol').value);
+    const psi = parseFloat(document.getElementById('sl-psi').value);
+    const cal = parseFloat(document.getElementById('sl-cal').value);
+    const mcu = parseFloat(document.getElementById('sl-mcu').value);
+    const perf = parseFloat(document.getElementById('sl-perf').value);
+    const bNav = document.getElementById('chk-nav').checked;
+    const bCal = document.getElementById('chk-cal').checked;
+    const showSpikes = document.getElementById('chk-spikes').checked;
+
+    document.getElementById('lbl-temp').textContent = temp.toFixed(1) + ' °C';
+    document.getElementById('lbl-osm').textContent = '+' + Math.round(osm) + ' mOsm/kg';
+    document.getElementById('lbl-icilin').textContent = Math.round(icilin) + ' nM';
+    document.getElementById('lbl-menthol').textContent = Math.round(menthol) + ' µM';
+    document.getElementById('lbl-psi').textContent = psi.toFixed(2);
+    document.getElementById('lbl-cal').textContent = cal.toFixed(2) + '×';
+    document.getElementById('lbl-mcu').textContent = mcu.toFixed(2) + '×';
+    document.getElementById('lbl-perf').textContent = perf.toFixed(2) + (perf === 0 ? ' (Clamped)' : (perf > 0 ? ' (Dilate)' : ' (Constrict)'));
+
+    const sim = simulateODE(Object.assign({ temp, osm, icilin, menthol, psi, cal, mcu, perf, bNav, bCal, showSpikes }, extra));
+
+    document.getElementById('st-peaks').textContent = sim.peaks;
+    document.getElementById('st-camax').textContent = Math.round(sim.caMax) + ' nM';
+    document.getElementById('st-tail').textContent = Math.round(sim.tailAmp) + ' nM';
+    document.getElementById('st-ph').textContent = sim.phMin.toFixed(2);
+    document.getElementById('st-cm').textContent = sim.cmMean.toFixed(2) + ' a.u.';
+
+    const regEl = document.getElementById('st-regime');
+    if (sim.tailAmp >= 80 && sim.peaks >= 2) {
+      regEl.textContent = 'Rhythmic Bursting';
+      regEl.style.color = '#34d399';
+    } else if (sim.caMax >= 450 && sim.cmMean >= 4.0) {
+      regEl.textContent = 'Matrix Ca²⁺ Overload';
+      regEl.style.color = '#fda4af';
+    } else if (sim.caMax >= 450 && mcu < 0.15) {
+      regEl.textContent = 'MCU-Protected Plateau';
+      regEl.style.color = '#38bdf8';
+    } else if (sim.caMax >= 450) {
+      regEl.textContent = 'Tonic Plateau';
+      regEl.style.color = '#fbbf24';
+    } else {
+      regEl.textContent = 'Quiet / Subthreshold';
+      regEl.style.color = '#94a3b8';
+    }
+
+    drawMainCanvas(document.getElementById('cv-main'), sim);
+    drawMitoCanvas(document.getElementById('cv-mito'), sim);
+  }
+
+  function applyPreset(key) {
+    const p = PRESETS[key];
+    if (!p) return;
+    extra = { vhM8: p.vhM8, exprM8: p.exprM8, vhNav: p.vhNav, kdMicu: p.kdMicu, nMicu: p.nMicu, tmbim5: p.tmbim5, vhCal: p.vhCal };
+    document.getElementById('sl-temp').value = p.temp;
+    document.getElementById('sl-osm').value = p.osm;
+    document.getElementById('sl-icilin').value = p.icilin;
+    document.getElementById('sl-menthol').value = p.menthol;
+    document.getElementById('sl-psi').value = p.psi;
+    document.getElementById('sl-cal').value = p.cal;
+    document.getElementById('sl-mcu').value = p.mcu;
+    document.getElementById('sl-perf').value = p.perf;
+    document.getElementById('chk-nav').checked = p.bNav;
+    document.getElementById('chk-cal').checked = p.bCal;
+    runAndRender();
+  }
+
+  document.querySelectorAll('#preset-bar .preset-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('#preset-bar .preset-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      applyPreset(btn.getAttribute('data-preset'));
+    });
+  });
+
+  ['sl-temp','sl-osm','sl-icilin','sl-menthol','sl-psi','sl-cal','sl-mcu','sl-perf','chk-nav','chk-cal','chk-spikes'].forEach(id => {
+    document.getElementById(id).addEventListener('input', runAndRender);
+  });
+  window.addEventListener('resize', runAndRender);
+
+  // ==================== WATER-ACTIVITY LEVERAGE CALCULATOR ====================
+  function updateAwCalc() {
+    const rh = parseFloat(document.getElementById('sl-aw-rh').value);
+    const sh = parseFloat(document.getElementById('sl-aw-sh').value);
+    const t = parseFloat(document.getElementById('sl-aw-t').value);
+    const aw0 = 0.99460, Mw = 0.018015;
+    const awSurf = rh / 100.0;
+    const awSg = aw0 + (1.0 - sh / 100.0) * (awSurf - aw0);
+    const cOsm = (-Math.log(awSg) / Mw) * 1000.0;
+    const c0 = (-Math.log(aw0) / Mw) * 1000.0;
+    const dOsm = Math.max(0, cOsm - c0);
+    const dVh = -0.72 * dOsm;
+
+    document.getElementById('lbl-aw-rh').textContent = rh + '% RH (' + awSurf.toFixed(2) + ')';
+    document.getElementById('lbl-aw-sh').textContent = sh.toFixed(2) + '%';
+    document.getElementById('lbl-aw-t').textContent = t.toFixed(1) + ' °C';
+    document.getElementById('aw-sg').textContent = awSg.toFixed(5);
+    document.getElementById('aw-osm').textContent = cOsm.toFixed(1) + ' mOsm/kg';
+    document.getElementById('aw-dosm').textContent = '+' + dOsm.toFixed(1) + ' mOsm/kg';
+    document.getElementById('aw-vh').textContent = dVh.toFixed(1) + ' mV (' + (dVh / 5.0).toFixed(1) + ' °C)';
+    return { t, dOsm: Math.min(150, Math.round(dOsm)) };
+  }
+  ['sl-aw-rh','sl-aw-sh','sl-aw-t'].forEach(id => document.getElementById(id).addEventListener('input', updateAwCalc));
+  document.getElementById('btn-send-ode').addEventListener('click', () => {
+    const res = updateAwCalc();
+    extra = { vhM8: 0, exprM8: 1.0, vhNav: 0, kdMicu: 0.30, nMicu: 5.0, tmbim5: 1.0, vhCal: 0 };
+    document.querySelectorAll('#preset-bar .preset-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('sl-temp').value = res.t;
+    document.getElementById('sl-osm').value = res.dOsm;
+    document.getElementById('sl-icilin').value = 0;
+    document.getElementById('sl-menthol').value = 0;
+    document.getElementById('sl-psi').value = 1.0;
+    document.getElementById('sl-cal').value = 1.0;
+    document.getElementById('sl-mcu').value = 1.0;
+    document.getElementById('sl-perf').value = 0.0;
+    document.getElementById('chk-nav').checked = false;
+    document.getElementById('chk-cal').checked = false;
+    runAndRender();
+    document.getElementById('simulator').scrollIntoView({ behavior: 'smooth' });
+  });
+
+  // ==================== FALSIFICATION TABLE FILTER & LIGHTBOX ====================
+  document.getElementById('fals-search').addEventListener('input', function() {
+    const q = this.value.trim().toLowerCase();
+    document.querySelectorAll('#fals-tbl tbody tr').forEach(tr => {
+      tr.style.display = (!q || tr.textContent.toLowerCase().includes(q)) ? '' : 'none';
+    });
+  });
+
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lb-img');
+  const lbCap = document.getElementById('lb-cap');
+  document.querySelectorAll('.fig-img-wrap').forEach(el => {
+    el.addEventListener('click', () => {
+      lbImg.src = el.getAttribute('data-full');
+      lbCap.textContent = el.getAttribute('data-cap') || '';
+      lb.classList.add('open');
+    });
+  });
+  const closeLb = () => lb.classList.remove('open');
+  document.getElementById('lb-close').addEventListener('click', closeLb);
+  lb.addEventListener('click', e => { if (e.target === lb) closeLb(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLb(); });
+
+  updateAwCalc();
+  applyPreset('ctrl');
+})();
+</script>
+</body>
+</html>

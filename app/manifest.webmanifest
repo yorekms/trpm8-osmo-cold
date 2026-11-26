@@ -1,0 +1,16 @@
+{
+  "name": "TRPM8 Cold & Hydration Study",
+  "short_name": "TRPM8 Lab",
+  "description": "Ecological Momentary Assessment & N-of-1 Psychophysics for Tissue Osmolarity, Local VPD, Hydration, and Cold Perception.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0b1220",
+  "theme_color": "#0b1220",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Crect width='192' height='192' rx='40' fill='%230b1220'/%3E%3Ccircle cx='96' cy='96' r='58' fill='none' stroke='%2338bdf8' stroke-width='12'/%3E%3Cpath d='M96 48v96M54 72l84 48M138 72l-84 48' stroke='%2338bdf8' stroke-width='10' stroke-linecap='round'/%3E%3C/svg%3E",
+      "sizes": "192x192",
+      "type": "image/svg+xml"
+    }
+  ]
+}

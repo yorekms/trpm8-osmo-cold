@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#0b1220" />
+  <title>TRPM8 Cold &amp; Hydration Lab</title>
+  <link rel="manifest" href="./manifest.webmanifest" />
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <div class="app-shell">
+    <header class="app-header">
+      <div class="brand">
+        <h1>❄️ TRPM8 Cold &amp; Hydration</h1>
+        <p>Osmolarity, Local VPD &amp; N-of-1 Psychophysics</p>
+      </div>
+      <div class="input-row" style="gap:6px;">
+        <a href="../index.html" class="pill-badge" style="text-decoration:none;color:#38bdf8;border-color:rgba(56,189,248,0.45);" title="Back to Preprint &amp; 5-ODE Oscillator Portal">&larr; Preprint &amp; 5-ODE</a>
+        <button id="btnUnitToggle" type="button" class="pill-badge" style="cursor:pointer;" title="Switch °F / °C">°F / °C</button>
+        <span id="participantBadge" class="pill-badge">ID: —</span>
+      </div>
+    </header>
+
+    <!-- ==================== TAB 1: 20-SECOND CHECK-IN ==================== -->
+    <section id="tab-checkin" class="tab-panel active">
+      <div class="card">
+        <h2>
+          <span>1. Local Weather &amp; Microclimate</span>
+          <span id="weatherStatus" class="subtext" style="margin:0;">Not fetched</span>
+        </h2>
+        <div class="weather-bar">
+          <button id="btnGpsWeather" class="btn btn-primary btn-sm" type="button">📍 Fetch Weather (Coarse GPS)</button>
+          <div class="input-row" style="flex:1;">
+            <input id="cityQuery" type="text" placeholder="Or city / ZIP (e.g. Iowa City)" style="flex:1; min-width:140px;" />
+            <button id="btnCityWeather" class="btn btn-sm" type="button">Lookup</button>
+          </div>
+        </div>
+
+        <div class="field">
+          <div class="field-head"><span>Where are you right now?</span></div>
+          <div class="segmented" id="segLocation">
+            <button type="button" class="chip active" data-val="outside">Outdoors</button>
+            <button type="button" class="chip" data-val="indoors">Indoors</button>
+          </div>
+        </div>
+
+        <div id="indoorControls" class="two-col hidden" style="margin-bottom:10px;">
+          <div class="field" style="margin-bottom:0;">
+            <div class="field-head">
+              <span>Indoor Temp</span>
+              <span class="field-val"><span id="valIndoorTemp">21</span> °C (<span id="valIndoorTempF">70</span> °F)</span>
+            </div>
+            <input id="rngIndoorTemp" type="range" min="15" max="28" step="0.5" value="21" />
+          </div>
+          <div class="field" style="margin-bottom:0;">
+            <div class="field-head"><span>Humidifier Running?</span></div>
+            <div class="segmented" id="segHumidifier">
+              <button type="button" class="chip active" data-val="no">No</button>
+              <button type="button" class="chip" data-val="yes">Yes</button>
+            </div>
+          </div>
+        </div>
+
+        <div id="weatherMetrics" class="weather-grid">
+          <div class="metric-box">
+            <div class="label">Outdoor T / RH</div>
+            <div class="val" id="mOutTRH">—</div>
+            <div class="hint" id="mDewPt">Dew pt: —</div>
+          </div>
+          <div class="metric-box">
+            <div class="label">Local Air RH</div>
+            <div class="val" id="mLocalRh">—</div>
+            <div class="hint" id="mLocalTemp">Local T: —</div>
+          </div>
+          <div class="metric-box">
+            <div class="label">Local VPD (Drying)</div>
+            <div class="val" id="mLocalVpd">—</div>
+            <div class="hint" id="mStressLabel">Fetch weather</div>
+          </div>
+          <div class="metric-box">
+            <div class="label">Evap Cool ΔT</div>
+            <div class="val" id="mEvapPot">—</div>
+            <div class="hint" id="mWind">Wind: —</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>2. How Does It Feel? (4-Axis Qualia)</h2>
+        <p class="subtext">Separates scalar cold from wetness illusions, dryness, and autonomic burst chills.</p>
+
+        <div class="field">
+          <div class="field-head">
+            <span>Thermal Sensation</span>
+            <span id="valThermal" class="field-val">0 · Neutral</span>
+          </div>
+          <input id="rngThermal" type="range" min="-4" max="4" step="0.5" value="0" />
+          <div class="range-labels">
+            <span>-4 Freezing</span>
+            <span>-2 Cool</span>
+            <span>0 Neutral</span>
+            <span>+2 Warm</span>
+            <span>+4 Hot</span>
+          </div>
+        </div>
+
+        <div class="two-col">
+          <div class="field">
+            <div class="field-head">
+              <span>Dry / Tight Skin</span>
+              <span id="valDrySkin" class="field-val">3 / 10</span>
+            </div>
+            <input id="rngDrySkin" type="range" min="0" max="10" step="1" value="3" />
+          </div>
+          <div class="field">
+            <div class="field-head">
+              <span>Dry / Gritty Eyes (Cornea)</span>
+              <span id="valDryEyes" class="field-val">2 / 10</span>
+            </div>
+            <input id="rngDryEyes" type="range" min="0" max="10" step="1" value="2" />
+          </div>
+        </div>
+
+        <div class="two-col">
+          <div class="field">
+            <div class="field-head">
+              <span>Perceived Wet / Clammy</span>
+              <span id="valWetness" class="field-val">0 / 10</span>
+            </div>
+            <input id="rngWetness" type="range" min="0" max="10" step="1" value="0" />
+          </div>
+          <div class="field">
+            <div class="field-head"><span>Physically Wet Skin?</span></div>
+            <div class="segmented" id="segPhysWet">
+              <button type="button" class="chip active" data-val="no">Dry</button>
+              <button type="button" class="chip" data-val="sweat">Sweat</button>
+              <button type="button" class="chip" data-val="rain">Water/Rain</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="field">
+          <div class="field-head"><span>Autonomic / Burst Sensations (Tap any)</span></div>
+          <div class="segmented" id="segAutonomic">
+            <button type="button" class="chip" data-flag="shivering">Shivering</button>
+            <button type="button" class="chip" data-flag="goosebumps">Goosebumps</button>
+            <button type="button" class="chip" data-flag="shudder">Sudden Shudder</button>
+            <button type="button" class="chip" data-flag="cold_fingers">Cold Fingers</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>3. Recent Water Intake &amp; Context</h2>
+
+        <div class="field">
+          <div class="field-head"><span>How much fluid did you drink recently?</span></div>
+          <div class="segmented" id="segWaterVol">
+            <button type="button" class="chip active" data-val="none">None</button>
+            <button type="button" class="chip" data-val="small">&lt;250 mL</button>
+            <button type="button" class="chip" data-val="medium">250–500 mL</button>
+            <button type="button" class="chip" data-val="large">&gt;500 mL</button>
+          </div>
+        </div>
+
+        <div id="waterDetailBox" class="hidden">
+          <div class="field">
+            <div class="field-head"><span>How long ago?</span></div>
+            <div class="segmented" id="segWaterRecency">
+              <button type="button" class="chip active" data-val="lt10">&lt;10 min</button>
+              <button type="button" class="chip" data-val="10_30">10–30 min</button>
+              <button type="button" class="chip" data-val="30_60">30–60 min</button>
+              <button type="button" class="chip" data-val="1_2h">1–2 hr</button>
+              <button type="button" class="chip" data-val="gt2h">&gt;2 hr</button>
+            </div>
+          </div>
+
+          <div class="two-col">
+            <div class="field">
+              <div class="field-head"><span>Drink Temp</span></div>
+              <div class="segmented" id="segWaterTemp">
+                <button type="button" class="chip" data-val="cold">Cold</button>
+                <button type="button" class="chip active" data-val="room">Room</button>
+                <button type="button" class="chip" data-val="warm">Warm / 37°C</button>
+              </div>
+            </div>
+            <div class="field">
+              <div class="field-head"><span>Fluid Type</span></div>
+              <div class="segmented" id="segWaterType">
+                <button type="button" class="chip active" data-val="plain">Plain Water</button>
+                <button type="button" class="chip" data-val="electrolyte">Electrolyte / Salty</button>
+                <button type="button" class="chip" data-val="caffeinated">Coffee / Tea</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="two-col">
+          <div class="field">
+            <div class="field-head"><span>Clothing Layers</span></div>
+            <div class="segmented" id="segClothing">
+              <button type="button" class="chip" data-val="light">Light</button>
+              <button type="button" class="chip active" data-val="moderate">Moderate</button>
+              <button type="button" class="chip" data-val="heavy">Heavy</button>
+            </div>
+          </div>
+          <div class="field">
+            <div class="field-head"><span>Activity</span></div>
+            <div class="segmented" id="segActivity">
+              <button type="button" class="chip active" data-val="resting">Resting</button>
+              <button type="button" class="chip" data-val="walking">Walking</button>
+              <button type="button" class="chip" data-val="active">Exercising</button>
+            </div>
+          </div>
+        </div>
+
+        <button id="btnLogCheckin" type="button" class="btn btn-primary btn-block">Save Check-In</button>
+      </div>
+    </section>
+
+    <!-- ==================== TAB 2: N-OF-1 POPPERIAN TRIALS ==================== -->
+    <section id="tab-trials" class="tab-panel">
+      <div class="callout">
+        <strong>Why N-of-1 Crossovers Beat Huge Surveys:</strong> One person running counterbalanced within-subject tests removes clothing, climate, and baseline noise—giving 10×–50× higher statistical power per observation.
+      </div>
+
+      <div class="card">
+        <h2>Select Guided Micro-Experiment</h2>
+        <div class="segmented" id="segTrialSelect">
+          <button type="button" class="chip active" data-trial="gel">A. Gel Submersion</button>
+          <button type="button" class="chip" data-trial="bolus">B. Water Bolus 2×2</button>
+          <button type="button" class="chip" data-trial="occlusion">C. Balm Occlusion</button>
+          <button type="button" class="chip" data-trial="blink">D. Cornea Blink</button>
+        </div>
+      </div>
+
+      <!-- TRIAL A: FAST-COOLING GEL SUBMERSION -->
+      <div id="trial-gel" class="card trial-pane">
+        <h2>Trial A · Fast-Cooling Gel Submersion (J<sub>evap</sub> = 0)</h2>
+        <p class="subtext">Submerging both hands simultaneously eliminates evaporative cooling completely, isolating osmolarity/skin hydration from heat flux.</p>
+
+        <div class="input-row" style="margin-bottom:10px;">
+          <button id="btnRandGel" type="button" class="btn btn-sm">🎲 Randomize Left / Right</button>
+          <span id="gelAssignment" class="pill-badge">Click Randomize</span>
+        </div>
+
+        <div class="field">
+          <div class="field-head"><span>Contrast Mode</span></div>
+          <select id="gelMode" style="width:100%;">
+            <option value="precond_dry_vs_hydrated">Dry-Preconditioned vs. Hydrated Hand (Same 22 °C Gel)</option>
+            <option value="hyper_nacl_vs_iso">Hyperosmotic NaCl Gel vs. Isoosmotic Gel (Matched Temp)</option>
+            <option value="hyper_mannitol_vs_iso">Hyperosmotic Mannitol Gel vs. Isoosmotic (Non-Ionic Control)</option>
+          </select>
+        </div>
+
+        <div class="two-col">
+          <div class="field">
+            <div class="field-head"><span>Bath Temp (<span class="unit-lbl">°F</span>)</span></div>
+            <input id="gelBathTemp" type="number" step="0.1" value="71.6" style="width:100%;" />
+          </div>
+          <div class="field">
+            <div class="field-head"><span>Pre-Immersion IR ΔT (Test−Ctrl <span class="unit-lbl">°F</span>)</span></div>
+            <input id="gelSkinDelta" type="number" step="0.1" value="0.0" style="width:100%;" />
+          </div>
+        </div>
+
+        <div class="timer-box">
+          <div>
+            <div class="subtext" style="margin:0;">Simultaneous Immersion Timer</div>
+            <div id="gelTimerDisplay" class="timer-readout">01:00</div>
+          </div>
+          <div class="input-row">
+            <button id="btnGelTimerStart" type="button" class="btn btn-primary btn-sm">Start 60s</button>
+            <button id="btnGelTimerReset" type="button" class="btn btn-sm">Reset</button>
+          </div>
+        </div>
+
+        <div class="field">
+          <div class="field-head"><span>Forced Choice: Which hand felt COLDER?</span></div>
+          <div class="segmented" id="segGelChoice">
+            <button type="button" class="chip" data-val="test_colder">Dry / Hyperosmotic Hand</button>
+            <button type="button" class="chip active" data-val="same">Identical</button>
+            <button type="button" class="chip" data-val="ctrl_colder">Hydrated / Isotonic Hand</button>
+          </div>
+        </div>
+
+        <div class="two-col">
+          <div class="field">
+            <div class="field-head"><span>Test Hand Coldness</span><span id="valGelTestCold" class="field-val">5 / 10</span></div>
+            <input id="rngGelTestCold" type="range" min="0" max="10" step="0.5" value="5" />
+          </div>
+          <div class="field">
+            <div class="field-head"><span>Control Hand Coldness</span><span id="valGelCtrlCold" class="field-val">5 / 10</span></div>
+            <input id="rngGelCtrlCold" type="range" min="0" max="10" step="0.5" value="5" />
+          </div>
+        </div>
+
+        <div class="field">
+          <div class="field-head"><span>Notes (tingling, wet vs prickly, bath osmolarity)</span></div>
+          <input id="gelNotes" type="text" placeholder="e.g., 600 mOsm mannitol, felt sharper sting at 20s" style="width:100%;" />
+        </div>
+
+        <button id="btnSaveGel" type="button" class="btn btn-primary btn-block">Save Gel Submersion Trial</button>
+      </div>
+
+      <!-- TRIAL B: WATER BOLUS 2x2 CROSSOVER -->
+      <div id="trial-bolus" class="card trial-pane hidden">
+        <h2>Trial B · Water Bolus 2×2 Crossover (H4)</h2>
+        <p class="subtext">Separates direct hypoosmotic TRPM8 sensitization from hepatic TRPV4 vasoconstriction and gastric cooling.</p>
+
+        <div class="input-row" style="margin-bottom:10px;">
+          <button id="btnRandBolus" type="button" class="btn btn-sm">🎲 Randomize 500 mL Arm</button>
+          <span id="bolusArmBadge" class="pill-badge">Pick or Randomize</span>
+        </div>
+
+        <div class="field">
+          <div class="field-head"><span>Bolus Arm (Drink 500 mL / ~17 oz in &lt;2 min)</span></div>
+          <select id="bolusArm" style="width:100%;">
+            <option value="warm_water">Arm 1: 98.6 °F / 37 °C Plain Water (Hypoosmotic, Isothermal)</option>
+            <option value="warm_saline">Arm 2: 98.6 °F / 37 °C Isotonic Electrolyte / 0.9% NaCl (Control)</option>
+            <option value="cool_saline">Arm 3: 59 °F / 15 °C Isotonic Electrolyte / 0.9% NaCl (Thermal Only)</option>
+            <option value="cool_water">Arm 4: 59 °F / 15 °C Plain Water (Hypoosmotic + Thermal)</option>
+          </select>
+        </div>
+
+        <div class="timer-box">
+          <div>
+            <div class="subtext" style="margin:0;">Elapsed Since Bolus (Log at 0, 5, 15, 30 min)</div>
+            <div id="bolusTimerDisplay" class="timer-readout">00:00</div>
+          </div>
+          <div class="input-row">
+            <button id="btnBolusTimerStart" type="button" class="btn btn-primary btn-sm">Start Clock</button>
+            <button id="btnBolusTimerReset" type="button" class="btn btn-sm">Reset</button>
+          </div>
+        </div>
+
+        <div class="two-col">
+          <div class="field">
+            <div class="field-head"><span>Timepoint</span></div>
+            <select id="bolusTimepoint" style="width:100%;">
+              <option value="0">t = 0 min (Baseline)</option>
+              <option value="5">t = 5 min</option>
+              <option value="15">t = 15 min</option>
+              <option value="30">t = 30 min</option>
+            </select>
+          </div>
+          <div class="field">
+            <div class="field-head"><span>Fingertip IR Temp (<span class="unit-lbl">°F</span>, optional)</span></div>
+            <input id="bolusFingerTemp" type="number" step="0.1" placeholder="e.g. 90.3" style="width:100%;" />
+          </div>
+        </div>
+
+        <div class="two-col">
+          <div class="field">
+            <div class="field-head"><span>Body Coldness</span><span id="valBolusCold" class="field-val">0</span></div>
+            <input id="rngBolusCold" type="range" min="-4" max="4" step="0.5" value="0" />
+          </div>
+          <div class="field">
+            <div class="field-head"><span>Chill / Shiver Urge</span><span id="valBolusShiver" class="field-val">0 / 10</span></div>
+            <input id="rngBolusShiver" type="range" min="0" max="10" step="1" value="0" />
+          </div>
+        </div>
+
+        <div class="field">
+          <div class="field-head"><span>Finger Coldness (Vasoconstriction Proxy)</span><span id="valBolusFinger" class="field-val">2 / 10</span></div>
+          <input id="rngBolusFinger" type="range" min="0" max="10" step="1" value="2" />
+        </div>
+
+        <button id="btnSaveBolusPoint" type="button" class="btn btn-primary btn-block">Log Bolus Timepoint</button>
+      </div>
+
+      <!-- TRIAL C: FOREARM OCCLUSION BALM SPLIT -->
+      <div id="trial-occlusion" class="card trial-pane hidden">
+        <h2>Trial C · Forearm Occlusion Split (H2)</h2>
+        <p class="subtext">Petrolatum or Tegaderm stops evaporation immediately without adding water. Wait 10 min, then compare bare dry skin vs. occluded skin.</p>
+
+        <div class="input-row" style="margin-bottom:10px;">
+          <button id="btnRandOcc" type="button" class="btn btn-sm">🎲 Randomize Forearm</button>
+          <span id="occAssignment" class="pill-badge">Click Randomize</span>
+        </div>
+
+        <div class="field">
+          <div class="field-head"><span>At rest (10 min): Which forearm feels COLDER?</span></div>
+          <div class="segmented" id="segOccRest">
+            <button type="button" class="chip" data-val="bare_colder">Bare Dry Forearm</button>
+            <button type="button" class="chip active" data-val="same">Same</button>
+            <button type="button" class="chip" data-val="occluded_colder">Occluded Forearm</button>
+          </div>
+        </div>
+
+        <div class="field">
+          <div class="field-head"><span>Room-Temp Metal Spoon Touch: Which feels COLDER?</span></div>
+          <div class="segmented" id="segOccSpoon">
+            <button type="button" class="chip" data-val="bare_colder">Bare Dry Forearm</button>
+            <button type="button" class="chip active" data-val="same">Same</button>
+            <button type="button" class="chip" data-val="occluded_colder">Occluded Forearm</button>
+          </div>
+        </div>
+
+        <button id="btnSaveOcc" type="button" class="btn btn-primary btn-block">Save Occlusion Trial</button>
+      </div>
+
+      <!-- TRIAL D: CORNEA VS EYELID BLINK CHECK -->
+      <div id="trial-blink" class="card trial-pane hidden">
+        <h2>Trial D · Cornea vs. Eyelid Blink Check (H1)</h2>
+        <p class="subtext">Quantifies corneal TRPM8 osmotic/evaporative drive (blink rate + ocular dryness) vs. adjacent eyelid skin cool/wetness at current VPD.</p>
+
+        <div class="timer-box">
+          <div>
+            <div class="subtext" style="margin:0;">30-Second Natural Blink Counter</div>
+            <div class="timer-readout"><span id="blinkTime">30</span>s · <span id="blinkCount">0</span> blinks</div>
+          </div>
+          <div class="input-row">
+            <button id="btnBlinkStart" type="button" class="btn btn-primary btn-sm">Start 30s</button>
+            <button id="btnBlinkReset" type="button" class="btn btn-sm">Reset</button>
+          </div>
+        </div>
+
+        <button id="btnBlinkTap" type="button" class="blink-pad" style="margin-bottom:12px;">👁️ TAP ON EVERY BLINK</button>
+
+        <div class="two-col">
+          <div class="field">
+            <div class="field-head"><span>Cornea Dry / Gritty / Urge</span><span id="valCorneaDry" class="field-val">2 / 10</span></div>
+            <input id="rngCorneaDry" type="range" min="0" max="10" step="1" value="2" />
+          </div>
+          <div class="field">
+            <div class="field-head"><span>Eyelid Skin Cool / Wet</span><span id="valLidCool" class="field-val">2 / 10</span></div>
+            <input id="rngLidCool" type="range" min="0" max="10" step="1" value="2" />
+          </div>
+        </div>
+
+        <button id="btnSaveBlink" type="button" class="btn btn-primary btn-block">Save Cornea / Blink Trial</button>
+      </div>
+    </section>
+
+    <!-- ==================== TAB 3: DASHBOARD & EXPORT ==================== -->
+    <section id="tab-data" class="tab-panel">
+      <div class="card">
+        <h2>
+          <span>Personal Summary</span>
+          <span id="demoTag" class="pill-badge hidden">Demo Data Active</span>
+        </h2>
+        <div class="weather-grid">
+          <div class="metric-box">
+            <div class="label">Check-Ins</div>
+            <div class="val" id="kpiCheckins">0</div>
+            <div class="hint">EMA logs</div>
+          </div>
+          <div class="metric-box">
+            <div class="label">N-of-1 Trials</div>
+            <div class="val" id="kpiTrials">0</div>
+            <div class="hint">Experiments</div>
+          </div>
+          <div class="metric-box">
+            <div class="label">Mean VPD</div>
+            <div class="val" id="kpiMeanVpd">—</div>
+            <div class="hint">kPa drying</div>
+          </div>
+          <div class="metric-box">
+            <div class="label">Water &lt;30m Δ</div>
+            <div class="val" id="kpiWaterDelta">—</div>
+            <div class="hint">Thermal shift</div>
+          </div>
+        </div>
+
+        <h3>Cold Sensation vs. Local Temperature (Colored by VPD)</h3>
+        <div class="chart-wrap">
+          <svg id="chartScatter" class="chart" viewBox="0 0 560 220"></svg>
+        </div>
+        <p class="subtext" style="margin-top:6px;">Blue dots = Humid/Low VPD (&lt;1.0 kPa) · Amber/Red dots = Dry/High VPD (≥1.0 kPa). If dry air feels colder at the same temperature, amber/red dots sit lower.</p>
+      </div>
+
+      <div class="card">
+        <h2>Export Dataset (Compatible with Python Pipeline)</h2>
+        <p class="subtext">Export JSON or CSV and feed directly into <code>analysis/analyze_ema_export.py</code> for automated Popperian hypothesis evaluation.</p>
+        <div class="input-row" style="margin-bottom:10px;">
+          <button id="btnExportJson" type="button" class="btn btn-primary btn-sm">⬇ Download JSON</button>
+          <button id="btnExportCheckinsCsv" type="button" class="btn btn-sm">⬇ Check-Ins CSV</button>
+          <button id="btnExportTrialsCsv" type="button" class="btn btn-sm">⬇ Trials CSV</button>
+        </div>
+        <div class="input-row">
+          <button id="btnLoadDemo" type="button" class="btn btn-sm">🧪 Load Sample Pilot Data</button>
+          <button id="btnClearData" type="button" class="btn btn-sm btn-danger">🗑 Clear All Local Data</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Recent Entries</h2>
+        <div id="recentLogs" class="log-list">
+          <p class="subtext">No logs yet. Record a Check-In or load Sample Pilot Data.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== TAB 4: SETTINGS & PRIVACY ==================== -->
+    <section id="tab-settings" class="tab-panel">
+      <div class="card">
+        <h2>Participant &amp; Study Settings</h2>
+        <div class="field">
+          <div class="field-head"><span>Anonymous Participant ID</span></div>
+          <div class="input-row">
+            <input id="inpParticipantId" type="text" style="flex:1;" />
+            <button id="btnSaveSettings" type="button" class="btn btn-primary btn-sm">Save</button>
+          </div>
+        </div>
+
+        <div class="two-col">
+          <div class="field">
+            <div class="field-head"><span>Baseline Dry Skin (0–10)</span></div>
+            <input id="inpBaseDrySkin" type="number" min="0" max="10" value="3" style="width:100%;" />
+          </div>
+          <div class="field">
+            <div class="field-head"><span>Baseline Dry Eye (0–10)</span></div>
+            <input id="inpBaseDryEye" type="number" min="0" max="10" value="2" style="width:100%;" />
+          </div>
+        </div>
+
+        <div class="two-col">
+          <div class="field">
+            <div class="field-head"><span>Cloud Backend Mode</span></div>
+            <select id="selSyncMode" style="width:100%;">
+              <option value="gas">Google Sheets (Apps Script Webhook)</option>
+              <option value="supabase">Supabase REST (PostgreSQL)</option>
+            </select>
+          </div>
+          <div class="field">
+            <div class="field-head">
+              <span>Sync Queue</span>
+              <span id="syncQueueBadge" class="field-val">0 pending</span>
+            </div>
+            <div class="input-row">
+              <button id="btnTestSync" type="button" class="btn btn-sm">Test Sync</button>
+              <button id="btnFlushSync" type="button" class="btn btn-sm">Flush Queue</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="field">
+          <div class="field-head"><span>Cloud Sync Endpoint URL</span></div>
+          <input id="inpWebhookUrl" type="url" placeholder="https://script.google.com/macros/s/.../exec (or Supabase REST URL)" style="width:100%;" />
+          <p class="subtext" style="margin-top:5px;">Leave blank for local-only storage. Offline records queue automatically and retry when online. See <code>cloud/DEPLOY_GUIDE.md</code>.</p>
+        </div>
+
+        <div id="supabaseKeyBox" class="field hidden">
+          <div class="field-head"><span>Supabase Anon Public Key (INSERT-only RLS)</span></div>
+          <input id="inpSupabaseKey" type="text" placeholder="eyJ..." style="width:100%;" />
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Privacy &amp; Home-Screen Install</h2>
+        <div class="callout">
+          <strong>Privacy-by-Design:</strong> GPS coordinates are rounded on-device to 0.1° (~11 km grid) solely to fetch public Open-Meteo weather data. Exact home coordinates are never stored or exported.
+        </div>
+        <p class="subtext">
+          <strong>iPhone (Safari):</strong> Tap Share → <em>Add to Home Screen</em>.<br />
+          <strong>Android (Chrome):</strong> Tap Menu (⋮) → <em>Install App</em>.<br />
+          Works fully offline for logging and timers; weather fetches whenever online.
+        </p>
+      </div>
+    </section>
+  </div>
+
+  <!-- BOTTOM NAVIGATION -->
+  <nav class="bottom-nav" aria-label="Main navigation">
+    <div class="nav-inner">
+      <button type="button" class="nav-btn active" data-tab="tab-checkin">
+        <span class="icon">🌡️</span><span>Check-In</span>
+      </button>
+      <button type="button" class="nav-btn" data-tab="tab-trials">
+        <span class="icon">🧪</span><span>N-of-1 Trials</span>
+      </button>
+      <button type="button" class="nav-btn" data-tab="tab-data">
+        <span class="icon">📊</span><span>Data &amp; Export</span>
+      </button>
+      <button type="button" class="nav-btn" data-tab="tab-settings">
+        <span class="icon">⚙️</span><span>Settings</span>
+      </button>
+    </div>
+  </nav>
+
+  <script type="module" src="./app.js"></script>
+</body>
+</html>
