@@ -536,9 +536,16 @@ def build_equation_blocks() -> list[Path]:
         OUT_DIR / "eq_block3_ode_system.png",
         figsize=(10.2, 2.35),
     )
+    p_eq4 = _render_eq_block(
+        [
+            (r"$K_{\mathrm{app}}(\mathrm{pH}_i)\ =\ K_0\left(\dfrac{1 + 10^{\mathrm{p}K_a^{\mathrm{O}} - \mathrm{pH}_i}}{1 + 10^{\mathrm{p}K_a^{\mathrm{D}} - \mathrm{pH}_i}}\right)^{\!4}, \qquad \Delta\Delta G_{\mathrm{tet}}(\mathrm{pH}_i)\ =\ -4RT\ln\!\left(\dfrac{1 + 10^{\mathrm{p}K_a^{\mathrm{D}} - \mathrm{pH}_i}}{1 + 10^{\mathrm{p}K_a^{\mathrm{O}} - \mathrm{pH}_i}}\right)$", "(8)"),
+        ],
+        OUT_DIR / "eq_block4_wyman_linkage.png",
+        figsize=(10.2, 1.15),
+    )
     # Also keep eq_block2_ode_system.png synced as an alias in case any legacy link references it
     shutil.copy2(p_eq3, OUT_DIR / "eq_block2_ode_system.png")
-    return [p_eq1, p_eq2, p_eq3]
+    return [p_eq1, p_eq2, p_eq3, p_eq4]
 
 
 def main():
